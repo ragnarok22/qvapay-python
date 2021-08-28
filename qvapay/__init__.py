@@ -13,8 +13,6 @@ from __future__ import absolute_import
 from qvapay.resources import *
 from qvapay.client import Client
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = 'Carlos Lugones <contact@lugodev.com>'
 __all__ = []
-
-api_url = 'https://qvapay.com/api/v'

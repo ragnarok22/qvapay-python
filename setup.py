@@ -4,9 +4,6 @@ import re
 
 from setuptools import setup, find_packages
 
-VERSION = '0.0.1'
-LONG_DESCRIPTION = open('README.md').read()
-
 
 def read(filename):
     filename = os.path.join(os.path.dirname(__file__), filename)
@@ -16,7 +13,7 @@ def read(filename):
 
 setup(
     name='qvapay',
-    version='0.0.1',
+    version='0.0.2',
     url="https://qvapay.com/docs",
     license='MIT',
 
