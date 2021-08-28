@@ -1,5 +1,15 @@
 # Python SDK for the QvaPay API
 
+```
+   ___             ____             
+  / _ \__   ____ _|  _ \ __ _ _   _ 
+ | | | \ \ / / _` | |_) / _` | | | |
+ | |_| |\ V / (_| |  __/ (_| | |_| |
+  \__\_\ \_/ \__,_|_|   \__,_|\__, |
+                              |___/ ✔️✔️
+
+```
+
 Non official, but friendly QvaPay library for the Python language.
 
 ## Setup
@@ -24,7 +34,7 @@ Create your account to process payments through QvaPay at [https://qvapay.com/re
 
 First, import the Client class and create your QvaPay client using your app credentials.
 
-```
+```python
 from qvapay import Client
 
 client = Client(app_id, app_secret, version=1)
@@ -34,19 +44,19 @@ client = Client(app_id, app_secret, version=1)
 
 **Get your app info**
 
-```
+```python
 info = client.info()
 ```
 
 **Get your account balance**
 
-```
+```python
 balance = client.balance()
 ```
 
 **Create an invoice**
 
-```
+```python
 transaction = client.create_invoice(
     amount=10,
     description='Ebook',
@@ -57,13 +67,13 @@ id = transaction.id
 
 **Get transaction**
 
-```
+```python
 transaction = client.get_transaction(id)
 ```
 
 **Get transactions**
 
-```
+```python
 transactions = client.transactions()
 ```
 
