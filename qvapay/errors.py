@@ -1,0 +1,3 @@
+
+class QvaPayError(Exception):
+    pass
