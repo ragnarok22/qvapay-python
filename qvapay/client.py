@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 import requests
-from qvapay import api_url
 from qvapay.errors import QvaPayError
 from qvapay.resources.info import Info
 from qvapay.resources.invoice import Invoice
@@ -30,7 +29,7 @@ class Client(object):
         self.app_id = app_id
         self.app_secret = app_secret
         self.version = version
-        self.url = api_url + str(version) + '/{endpoint}' + f'?app_id={self.app_id}&app_secret={self.app_secret}'
+        self.url = 'https://qvapay.com/api/v' + str(version) + '/{endpoint}' + f'?app_id={self.app_id}&app_secret={self.app_secret}'
     
     def info(self):
         """
@@ -150,12 +149,12 @@ class Client(object):
 
         url = self.url.format(endpoint='create_invoice') + f'&amount={amount}&description={description}'
 
-        if remote_id is not None:
-            s = {
-                True: '1',
-                False: '0'
-            }.get(signed)
-            url += f'&remote_id={remote_id}&signed={s}'
+        s = {
+            True: '1',
+            False: '0'
+        }.get(signed)
+
+        url += f'&remote_id={remote_id}&signed={s}'
 
         response = requests.get(url=url)
 
