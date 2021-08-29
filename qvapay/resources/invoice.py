@@ -1,6 +1,3 @@
-import requests
-
-
 class Invoice(object):
     """
     QvaPay invoice
