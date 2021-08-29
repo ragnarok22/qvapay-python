@@ -1,28 +1,24 @@
-import requests
+from dataclasses import dataclass
 
 
+@dataclass
 class Info(object):
     """
     QvaPay app info
     """
 
-    id = None
-    user_id = None
-    name = None
-    url = None
-    description = None
-    callback = None
-    logo = None
-    active = None
-    enabled = None
+    id: str = None
+    user_id: int = None
+    name: str = None
+    url: str = None
+    description: str = None
+    callback: str = None
+    logo: str = None
+    active: bool = False
+    enabled: bool = False
 
-    def __init__(self, id, user_id, name, url, description, callback, logo, active, enabled):
-        self.user_id = user_id
-        self.name = name
-        self.url = url
-        self.description = description
-        self.callback = callback
-        self.logo = logo
-        self.id = id
-        self.active = active
-        self.enabled = enabled
+    def __post_init__(self):
+        if self.active == 1:
+            self.active = True
+        if self.enabled == 1:
+            self.enabled = True
