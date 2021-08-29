@@ -1,3 +1,6 @@
+from dataclasses import dataclass
 
+
+@dataclass
 class QvaPayError(Exception):
-    pass
+    status_code: int
