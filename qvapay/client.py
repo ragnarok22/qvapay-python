@@ -80,7 +80,7 @@ class Client:
         amount: float,
         description: str,
         remote_id: str,
-        signed: int = 0,
+        signed: bool = False,
     ) -> Invoice:
         """
         Creates an invoice.
@@ -94,7 +94,7 @@ class Client:
             "amount": amount,
             "description": description,
             "remote_id": remote_id,
-            "signed": signed,
+            "signed": 1 if signed else 0,
         }
         response = self.request.get("create_invoice", params=params)
         validate_response(response)
