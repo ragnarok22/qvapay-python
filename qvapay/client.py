@@ -3,9 +3,13 @@ from __future__ import absolute_import
 import httpx
 
 from qvapay.errors import QvaPayError
-from qvapay.resources.info import Info
-from qvapay.resources.invoice import Invoice
-from qvapay.resources.transaction import PaginatedTransactions, Transaction
+from qvapay.models.info import Info
+from qvapay.models.invoice import Invoice
+from qvapay.models.transaction import (
+    PaginatedTransactions,
+    Transaction,
+    TransactionDetail,
+)
 
 
 def validate_response(response: httpx.Response) -> None:
@@ -42,7 +46,7 @@ class Client(object):
         """
         response = self.request.get("info")
         validate_response(response)
-        return Info(**response.json())
+        return Info.from_dict(response.json())
 
     def balance(self) -> dict:
         """
@@ -53,3 +57,24 @@ class Client(object):
         response = self.request.get("balance")
         validate_response(response)
         return response.json()
+
+    def transactions(self, page: int = 1) -> PaginatedTransactions:
+        """
+        Gets transactions list, paginated by 50 items per request.
+        * page: Page to be fetched.
+        https://qvapay.com/docs/2.0/transactions
+        """
+        params = {"page": str(page)}
+        response = self.request.get("transactions", params=params)
+        validate_response(response)
+        return PaginatedTransactions.from_dict(response.json())
+
+    def get_transaction(self, id: str):
+        """
+        Gets a transaction by its id (uuid).
+        * id: Transaction uuid returned by QvaPay when created.
+        https://qvapay.com/docs/2.0/transaction
+        """
+        response = self.request.get(f"transactions/{id}")
+        validate_response(response)
+        return TransactionDetail.from_dict(response.json())
