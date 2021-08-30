@@ -31,7 +31,7 @@ class Client:
 
     def __post_init__(self):
         self.request = httpx.Client(
-            base_url=f"https://stage.qvapay.com/api/v{self.version}",
+            base_url=f"https://qvapay.com/api/v{self.version}",
             params={"app_id": self.app_id, "app_secret": self.app_secret},
         )
 
