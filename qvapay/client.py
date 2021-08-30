@@ -1,15 +1,13 @@
 from __future__ import absolute_import
 
+from dataclasses import dataclass, field
+
 import httpx
 
 from qvapay.errors import QvaPayError
 from qvapay.models.info import Info
 from qvapay.models.invoice import Invoice
-from qvapay.models.transaction import (
-    PaginatedTransactions,
-    Transaction,
-    TransactionDetail,
-)
+from qvapay.models.transaction import PaginatedTransactions, TransactionDetail
 
 
 def validate_response(response: httpx.Response) -> None:
@@ -17,23 +15,21 @@ def validate_response(response: httpx.Response) -> None:
         raise QvaPayError(response.status_code)
 
 
-class Client(object):
-    app_id = None
-    app_secret = None
-    version = None
+@dataclass
+class Client:
+    """
+    Creates a QvaPay client.
+    * app_id: QvaPay app id.
+    * app_secret: QvaPay app secret.
+    Get your app credentials at: https://qvapay.com/apps/create
+    """
 
-    data = None
+    app_id: str
+    app_secret: str
+    version: int = 1
+    request: httpx.Client = field(init=False)
 
-    def __init__(self, app_id, app_secret, version=1):
-        """
-        Creates a QvaPay client.
-        * app_id: QvaPay app id.
-        * app_secret: QvaPay app secret.
-        Get your app credentials at: https://qvapay.com/apps/create
-        """
-        self.app_id = app_id
-        self.app_secret = app_secret
-        self.version = version
+    def __post_init__(self):
         self.request = httpx.Client(
             base_url=f"https://stage.qvapay.com/api/v{self.version}",
             params={"app_id": self.app_id, "app_secret": self.app_secret},
@@ -69,7 +65,7 @@ class Client(object):
         validate_response(response)
         return PaginatedTransactions.from_dict(response.json())
 
-    def get_transaction(self, id: str):
+    def get_transaction(self, id: str) -> TransactionDetail:
         """
         Gets a transaction by its id (uuid).
         * id: Transaction uuid returned by QvaPay when created.
@@ -78,3 +74,28 @@ class Client(object):
         response = self.request.get(f"transactions/{id}")
         validate_response(response)
         return TransactionDetail.from_dict(response.json())
+
+    def create_invoice(
+        self,
+        amount: float,
+        description: str,
+        remote_id: str,
+        signed: int = 0,
+    ) -> Invoice:
+        """
+        Creates an invoice.
+        * amount: Amount of money to receive to your wallet, expressed in dollars with two decimals.
+        * description: Description of the invoice to be created, useful to show info to the user who pays. Max 300 chars.
+        * remote_id: Invoice ID on your side (example: in your e-commerce store). Optional.
+        * signed: Generates a signed URL, valid for 30 minutes. Useful to increase security, introducing an expiration datetime. Optional.
+        https://qvapay.com/docs/2.0/create_invoice
+        """
+        params = {
+            "amount": amount,
+            "description": description,
+            "remote_id": remote_id,
+            "signed": signed,
+        }
+        response = self.request.get("create_invoice", params=params)
+        validate_response(response)
+        return Invoice.from_dict(response.json())
