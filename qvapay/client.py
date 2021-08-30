@@ -71,7 +71,7 @@ class Client:
         * id: Transaction uuid returned by QvaPay when created.
         https://qvapay.com/docs/2.0/transaction
         """
-        response = self.request.get(f"transactions/{id}")
+        response = self.request.get(f"transaction/{id}")
         validate_response(response)
         return TransactionDetail.from_dict(response.json())
 
