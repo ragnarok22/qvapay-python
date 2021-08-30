@@ -1,18 +1,18 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import List, Optional
 from uuid import UUID
-
-from typing import List
 
 from dataclasses_json import config, dataclass_json
 
 from .info import Info
 from .owner import Owner
 from .paid import PaidBy
+from .link import Link
 
 
-@dataclass
 @dataclass_json
+@dataclass
 class Transaction:
     """
     QvaPay transaction
@@ -26,20 +26,14 @@ class Transaction:
     remote_id: str
     status: str
     paid_by_user_id: int
-    signed: bool
-    created_at: datetime
-    updated_at: datetime
-
-    def __post_init__(self):
-        if self.signed == 1:
-            self.signed = True
-        else:
-            self.signed = False
+    signed: bool = field(metadata=config(decoder=bool))
+    created_at: datetime = field(metadata=config(decoder=str))
+    updated_at: datetime = field(metadata=config(decoder=str))
 
 
-@dataclass
 @dataclass_json
-class TransactionDetal(Transaction):
+@dataclass
+class TransactionDetail(Transaction):
     """
     QvaPay transaction
     """
@@ -49,18 +43,19 @@ class TransactionDetal(Transaction):
     owner: Owner
 
 
-@dataclass
 @dataclass_json
+@dataclass
 class PaginatedTransactions:
     current_page: int
     data: List[Transaction]
     first_page_url: str
-    from_index: int = field(metadata=config(field_name="from"))
+    from_index: Optional[int] = field(metadata=config(field_name="from"))
     last_page: int
     last_page_url: str
-    next_page_url: str
+    links: List[Link]
+    next_page_url: Optional[str]
     path: str
     per_page: int
-    prev_page_url: int
-    to_index: int = field(metadata=config(field_name="to"))
+    prev_page_url: Optional[str]
+    to_index: Optional[int] = field(metadata=config(field_name="to"))
     total: int
