@@ -26,7 +26,6 @@ class Transaction:
     remote_id: str
     status: str
     paid_by_user_id: int
-    signed: bool = field(metadata=config(decoder=bool))
     created_at: datetime = field(metadata=config(decoder=str))
     updated_at: datetime = field(metadata=config(decoder=str))
 
