@@ -78,3 +78,16 @@ transactions = client.transactions()
 ```
 
 You can also read the QvaPay API documentation: [https://qvapay.com/docs](https://qvapay.com/docs).
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
+<p align="center">
+    <img src="http://ForTheBadge.com/images/badges/made-with-python.svg">
+</p>
