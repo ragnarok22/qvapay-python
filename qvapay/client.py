@@ -4,10 +4,10 @@ from dataclasses import dataclass, field
 
 import httpx
 
-from qvapay.errors import QvaPayError
-from qvapay.models.info import Info
-from qvapay.models.invoice import Invoice
-from qvapay.models.transaction import PaginatedTransactions, TransactionDetail
+from .errors import QvaPayError
+from .models.info import Info
+from .models.invoice import Invoice
+from .models.transaction import PaginatedTransactions, TransactionDetail
 
 
 def validate_response(response: httpx.Response) -> None:
