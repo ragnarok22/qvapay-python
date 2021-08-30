@@ -6,13 +6,14 @@
   \__\_\ \_/ \__,_|_|   \__,_|\__, |
                               |___/ ✔️✔️
 
-   Python SDK for the QvaPay API
+   Python SDK for the QvaPay API v1
 """
 
 from __future__ import absolute_import
-from qvapay.resources import *
-from qvapay.client import Client
+from .models import * # noqa: F401
+from .client import Client # noqa: F401
+from .errors import QvaPayError # noqa: F401
 
-__version__ = '0.0.2'
-__author__ = 'Carlos Lugones <contact@lugodev.com>'
+__version__ = "0.0.2"
+__author__ = "Carlos Lugones <contact@lugodev.com>"
 __all__ = []
