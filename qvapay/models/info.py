@@ -1,15 +1,18 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from uuid import UUID
 
+from dataclasses_json import config, dataclass_json
 
+
+@dataclass_json
 @dataclass
 class Info:
     """
     QvaPay app info
     """
 
-    uuid: UUID
+    id: UUID = field(metadata=config(field_name="uuid"))
     user_id: int
     name: str
     url: str
@@ -18,18 +21,8 @@ class Info:
     success_url: str
     cancel_url: str
     logo: str
-    active: bool
-    enabled: bool
+    active: bool = field(metadata=config(decoder=bool))
+    enabled: bool = field(metadata=config(decoder=bool))
     card: int
-    created_at: datetime
-    updated_at: datetime
-
-    def __post_init__(self):
-        if self.active == 1:
-            self.active = True
-        else:
-            self.active = False
-        if self.enabled == 1:
-            self.enabled = True
-        else:
-            self.enabled = False
+    created_at: datetime = field(metadata=config(decoder=str))
+    updated_at: datetime = field(metadata=config(decoder=str))
