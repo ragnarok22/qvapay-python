@@ -13,7 +13,7 @@ def read(filename):
 
 setup(
     name='qvapay',
-    version='0.0.2',
+    version='0.0.3',
     url="https://qvapay.com/docs",
     license='MIT',
 
@@ -25,8 +25,6 @@ setup(
     long_description_content_type='text/markdown',
     
     packages=find_packages(),
-
-    install_requires=['requests'],
 
     keywords=['QvaPay', 'api', 'payments'],
     classifiers=[
