@@ -1,21 +1,21 @@
-class Invoice(object):
+from dataclasses import dataclass, field
+from uuid import UUID
+
+from dataclasses_json import config, dataclass_json
+
+
+@dataclass_json
+@dataclass
+class Invoice:
     """
     QvaPay invoice
     """
 
-    amount = None
-    description = None
-    remote_id = None
+    app_id: UUID
+    amount: float
+    description: str
+    remote_id: str
     signed = None
-    id = None
-    url = None
-    signed_url = None
-
-    def __init__(self, amount, description, remote_id, signed, id, url, signed_url):
-        self.amount = amount
-        self.description = description
-        self.remote_id = remote_id
-        self.signed = signed
-        self.id = id
-        self.url = url
-        self.signed_url = signed_url
+    transaction_uuid: UUID = field(metadata=config(field_name="transation_uuid"))
+    url: str
+    signed_url: str = field(metadata=config(field_name="signedUrl"))
