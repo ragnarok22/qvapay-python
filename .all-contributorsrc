@@ -9,6 +9,16 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "gitmoji",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "lugodev",
+      "name": "Carlos Lugones",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18733370?v=4",
+      "profile": "https://bio.link/lugodev",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
   "contributorsPerLine": 7
 }
