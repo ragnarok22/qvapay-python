@@ -24,36 +24,56 @@ You can install this package by using the pip tool and installing:
 pip install qvapay
 ```
 
-Or:
+Or
 
 ```bash
 easy_install qvapay
 ```
 
-## Sign up on QvaPay
+## Sign up on **QvaPay**
 
-Create your account to process payments through QvaPay at [https://qvapay.com/register](https://qvapay.com/register).
+Create your account to process payments through **QvaPay** at [qvapay.com/register](https://qvapay.com/register).
 
 ## Using the client
 
-First, import the Client class and create your QvaPay client using your app credentials.
+First, import the `QvaPayClient` class and create your **QvaPay** client using your app credentials.
 
 ```python
-from qvapay import Client
+from qvapay.v1 import QvaPayClient
 
-client = Client(app_id, app_secret, version=1)
+client = QvaPayClient(app_id, app_secret)
+```
+
+It is also possible to use the `QvaPayAuth` class (which by default obtains its properties from environment variables or from the content of the `.env` file) and the static method `QvaPayClient.from_auth` to initialize the client.
+
+```python
+from qvapay.v1 import QvaPayAuth, QvaPayClient
+
+client = QvaPayClient.from_auth(QvaPayAuth())
 ```
 
 ### Get your app info
 
 ```python
-info = client.info()
+info = client.get_info()
+```
+
+Or
+
+```python
+info = await client.get_info_async()
 ```
 
 ### Get your account balance
 
 ```python
-balance = client.balance()
+balance = client.get_balance()
+```
+
+Or
+
+```python
+balance = await client.get_balance_async()
 ```
 
 ### Create an invoice
@@ -64,7 +84,16 @@ transaction = client.create_invoice(
     description='Ebook',
     remote_id='EE-BOOk-123' # example remote invoice id
 )
-id = transaction.id
+```
+
+Or
+
+```python
+transaction = await client.create_invoice_async(
+    amount=10,
+    description='Ebook',
+    remote_id='EE-BOOk-123' # example remote invoice id
+)
 ```
 
 ### Get transaction
@@ -73,13 +102,25 @@ id = transaction.id
 transaction = client.get_transaction(id)
 ```
 
+Or
+
+```python
+transaction = await client.get_transaction_async(id)
+```
+
 ### Get transactions
 
 ```python
-transactions = client.transactions()
+transactions = client.get_transactions(page=1)
 ```
 
-You can also read the QvaPay API documentation: [https://qvapay.com/docs](https://qvapay.com/docs).
+Or
+
+```python
+transactions = await client.get_transactions_async(page=1)
+```
+
+You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
 
 ## Contributors ✨
 
