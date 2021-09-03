@@ -122,6 +122,16 @@ transactions = await client.get_transactions_async(page=1)
 
 You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
 
+## Migration guide
+
+### 0.0.3 -> 0.x.x
+
+- `from qvapay.v1 import *` instead of `from qvapay import *`
+- `QvaPayClient` instead of `Client`
+- `client.get_info` instead of `client.info`
+- `client.get_balance` instead of `client.balance`
+- `client.get_transactions` instead of `client.transactions`
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
