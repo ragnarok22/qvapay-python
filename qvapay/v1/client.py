@@ -1,3 +1,4 @@
+from dataclasses import dataclass, field
 from typing import Union
 from uuid import UUID
 
@@ -13,6 +14,7 @@ from .models.transaction_detail import TransactionDetail
 from .utils import validate_response
 
 
+@dataclass
 class QvaPayClient:
     """
     Creates a QvaPay client.
@@ -21,25 +23,22 @@ class QvaPayClient:
     Get your app credentials at: https://qvapay.com/apps/create
     """
 
-    def __init__(
-        self,
-        app_id: str,
-        app_secret: str,
-        timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-    ) -> None:
-        self.app_id = app_id
-        self.app_secret = app_secret
-        self.auth_params = {"app_id": app_id, "app_secret": app_secret}
+    app_id: str
+    app_secret: str
+    timeout: TimeoutTypes = field(default=DEFAULT_TIMEOUT_CONFIG)
+
+    def __post_init__(self):
+        self.auth_params = {"app_id": self.app_id, "app_secret": self.app_secret}
         self.base_url = "https://qvapay.com/api/v1"
         self.sync_client = lambda: Client(
             base_url=self.base_url,
             params=self.auth_params,
-            timeout=timeout,
+            timeout=self.timeout,
         )
         self.async_client = lambda: AsyncClient(
             base_url=self.base_url,
             params=self.auth_params,
-            timeout=timeout,
+            timeout=self.timeout,
         )
 
     @staticmethod
