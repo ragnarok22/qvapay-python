@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qvapay"
-version = "0.0.4"
+version = "0.1.0"
 description = "Python SDK for the QvaPay API"
 authors = [
     "Carlos Lugones <contact@lugodev.com>",
@@ -37,6 +37,7 @@ black = "^21.8b0"
 isort = "^5.9.3"
 pytest-cov = "^2.12.1"
 pytest-asyncio = "^0.15.1"
+commitizen = "^2.18.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

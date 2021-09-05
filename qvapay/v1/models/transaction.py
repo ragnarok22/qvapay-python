@@ -17,7 +17,7 @@ class Transaction:
     app_id: int
     amount: float
     description: str
-    remote_id: UUID
+    remote_id: str
     status: str
     paid_by_user_id: int
     created_at: datetime
@@ -30,7 +30,7 @@ class Transaction:
         self.app_id = int(str(self.app_id))
         self.amount = float(str(self.amount))
         self.description = str(self.description)
-        self.remote_id = UUID(str(self.remote_id))
+        self.remote_id = str(self.remote_id)
         self.status = str(self.status)
         self.paid_by_user_id = int(str(self.paid_by_user_id))
         self.created_at = parse(str(self.created_at))
