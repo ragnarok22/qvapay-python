@@ -1,64 +1,82 @@
 # Python SDK for the QvaPay API
 
-```
-   ___             ____             
-  / _ \__   ____ _|  _ \ __ _ _   _ 
- | | | \ \ / / _` | |_) / _` | | | |
- | |_| |\ V / (_| |  __/ (_| | |_| |
-  \__\_\ \_/ \__,_|_|   \__,_|\__, |
-                              |___/ ✔️✔️
-
-```
+![Banner](banner.jpg)
 
 Non official, but friendly QvaPay library for the Python language.
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Test](https://github.com/lugodev/qvapay-python/workflows/CI/badge.svg)](https://github.com/lugodev/qvapay-python/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/lugodev/qvapay-python/branch/main/graph/badge.svg)](https://codecov.io/gh/lugodev/qvapay-python)
+[![Version](https://img.shields.io/pypi/v/qvapay?color=%2334D058&label=Version)](https://pypi.org/project/qvapay)
+[![Last commit](https://img.shields.io/github/last-commit/lugodev/qvapay-python.svg?style=flat)](https://github.com/lugodev/qvapay-python/commits)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/lugodev/qvapay-python)](https://github.com/lugodev/qvapay-python/commits)
+[![Github Stars](https://img.shields.io/github/stars/lugodev/qvapay-python?style=flat&logo=github)](https://github.com/lugodev/qvapay-python/stargazers)
+[![Github Forks](https://img.shields.io/github/forks/lugodev/qvapay-python?style=flat&logo=github)](https://github.com/lugodev/qvapay-python/network/members)
+[![Github Watchers](https://img.shields.io/github/watchers/lugodev/qvapay-python?style=flat&logo=github)](https://github.com/lugodev/qvapay-python)
+[![GitHub contributors](https://img.shields.io/github/contributors/lugodev/qvapay-python?label=code%20contributors)](https://github.com/lugodev/qvapay-python/graphs/contributors)<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## Setup
 
 You can install this package by using the pip tool and installing:
 
 ```bash
-$ pip install qvapay
+pip install qvapay
 ```
 
-Or:
+Or
 
 ```bash
-$ easy_install qvapay
+easy_install qvapay
 ```
 
-## Sign up on QvaPay
+## Sign up on **QvaPay**
 
-Create your account to process payments through QvaPay at [https://qvapay.com/register](https://qvapay.com/register).
+Create your account to process payments through **QvaPay** at [qvapay.com/register](https://qvapay.com/register).
 
 ## Using the client
 
-First, import the Client class and create your QvaPay client using your app credentials.
+First, import the `QvaPayClient` class and create your **QvaPay** client using your app credentials.
 
 ```python
-from qvapay import Client
+from qvapay.v1 import QvaPayClient
 
-client = Client(app_id, app_secret, version=1)
+client = QvaPayClient(app_id, app_secret)
 ```
 
-### Endpoints
-
-**Get your app info**
+It is also possible to use the `QvaPayAuth` class (which by default obtains its properties from environment variables or from the content of the `.env` file) and the static method `QvaPayClient.from_auth` to initialize the client.
 
 ```python
-info = client.info()
+from qvapay.v1 import QvaPayAuth, QvaPayClient
+
+client = QvaPayClient.from_auth(QvaPayAuth())
 ```
 
-**Get your account balance**
+### Get your app info
 
 ```python
-balance = client.balance()
+info = client.get_info()
 ```
 
-**Create an invoice**
+Or
+
+```python
+info = await client.get_info_async()
+```
+
+### Get your account balance
+
+```python
+balance = client.get_balance()
+```
+
+Or
+
+```python
+balance = await client.get_balance_async()
+```
+
+### Create an invoice
 
 ```python
 transaction = client.create_invoice(
@@ -66,22 +84,53 @@ transaction = client.create_invoice(
     description='Ebook',
     remote_id='EE-BOOk-123' # example remote invoice id
 )
-id = transaction.id
 ```
 
-**Get transaction**
+Or
+
+```python
+transaction = await client.create_invoice_async(
+    amount=10,
+    description='Ebook',
+    remote_id='EE-BOOk-123' # example remote invoice id
+)
+```
+
+### Get transaction
 
 ```python
 transaction = client.get_transaction(id)
 ```
 
-**Get transactions**
+Or
 
 ```python
-transactions = client.transactions()
+transaction = await client.get_transaction_async(id)
 ```
 
-You can also read the QvaPay API documentation: [https://qvapay.com/docs](https://qvapay.com/docs).
+### Get transactions
+
+```python
+transactions = client.get_transactions(page=1)
+```
+
+Or
+
+```python
+transactions = await client.get_transactions_async(page=1)
+```
+
+You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
+
+## Migration guide
+
+### 0.0.3 -> 0.x.x
+
+- `from qvapay.v1 import *` instead of `from qvapay import *`
+- `QvaPayClient` instead of `Client`
+- `client.get_info` instead of `client.info`
+- `client.get_balance` instead of `client.balance`
+- `client.get_transactions` instead of `client.transactions`
 
 ## Contributors ✨
 
