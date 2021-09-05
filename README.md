@@ -1,6 +1,6 @@
 # Python SDK for the QvaPay API
 
-![Banner](banner.jpg)
+![Banner](https://raw.githubusercontent.com/lugodev/qvapay-python/main/banner.jpg)
 
 Non official, but friendly QvaPay library for the Python language.
 
