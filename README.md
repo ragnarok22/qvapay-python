@@ -53,28 +53,25 @@ from qvapay.v1 import QvaPayAuth, QvaPayClient
 client = QvaPayClient.from_auth(QvaPayAuth())
 ```
 
+### Use context manager
+The recommended way to use a client is as a context manager.
+Example:
+```python
+[async] with QvaPayClient(...) as client:
+    # Do anything you want
+    ...
+```
+
 ### Get your app info
 
 ```python
 info = client.get_info()
 ```
 
-Or
-
-```python
-info = await client.get_info_async()
-```
-
 ### Get your account balance
 
 ```python
 balance = client.get_balance()
-```
-
-Or
-
-```python
-balance = await client.get_balance_async()
 ```
 
 ### Create an invoice
@@ -87,26 +84,10 @@ transaction = client.create_invoice(
 )
 ```
 
-Or
-
-```python
-transaction = await client.create_invoice_async(
-    amount=10,
-    description='Ebook',
-    remote_id='EE-BOOk-123' # example remote invoice id
-)
-```
-
 ### Get transaction
 
 ```python
 transaction = client.get_transaction(id)
-```
-
-Or
-
-```python
-transaction = await client.get_transaction_async(id)
 ```
 
 ### Get transactions
@@ -115,10 +96,11 @@ transaction = await client.get_transaction_async(id)
 transactions = client.get_transactions(page=1)
 ```
 
-Or
-
+## Async features
+You can also use the asynchronous version of the methods simply by appending `_async` to the method name at the end
+Example:
 ```python
-transactions = await client.get_transactions_async(page=1)
+info = await client.get_info_async()
 ```
 
 You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
