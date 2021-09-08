@@ -218,4 +218,4 @@ class QvaPayClient:
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.close()    
+        self.close()
