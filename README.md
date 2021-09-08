@@ -54,8 +54,9 @@ client = QvaPayClient.from_auth(QvaPayAuth())
 ```
 
 ### Use context manager
-The recommended way to use a client is as a context manager.
-Example:
+
+The recommended way to use a client is as a context manager. For example:
+
 ```python
 [async] with QvaPayClient(...) as client:
     # Do anything you want
@@ -97,8 +98,9 @@ transactions = client.get_transactions(page=1)
 ```
 
 ## Async features
-You can also use the asynchronous version of the methods simply by appending `_async` to the method name at the end
-Example:
+
+You can also use the asynchronous version of the methods simply by appending `_async` to the method name at the end. For example:
+
 ```python
 info = await client.get_info_async()
 ```
