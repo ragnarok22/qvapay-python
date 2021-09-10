@@ -36,7 +36,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "jorgeajimenezl",
+      "name": "Jorge Alejandro Jimenez Luna",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18174581?v=4",
+      "profile": "https://github.com/jorgeajimenezl",
+      "contributions": [
+        "code"
+      ]
     }
+    
   ],
   "contributorsPerLine": 7
 }
