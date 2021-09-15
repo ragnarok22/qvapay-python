@@ -1,5 +1,4 @@
 import asyncio
-
 from dataclasses import dataclass, field
 from types import TracebackType
 from typing import Optional, Type, Union
@@ -197,7 +196,7 @@ class QvaPayClient:
                 # Skip error when no use async loops
                 pass
 
-    def __enter__(self) -> None:
+    def __enter__(self) -> "QvaPayClient":
         return self
 
     def __exit__(
