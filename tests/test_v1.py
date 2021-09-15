@@ -33,11 +33,11 @@ def test_create_invoice():
 
 
 def test_get_transactions():
-    client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
-    result = client.get_transactions()
-    if result.data:
-        item = result.data[0]
-        client.get_transaction(item.id)
+    with QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT)) as client:
+        result = client.get_transactions()
+        if result.data:
+            item = result.data[0]
+            client.get_transaction(item.id)
 
 
 @pytest_mark.asyncio
@@ -70,8 +70,8 @@ async def test_create_invoice_async():
 
 @pytest_mark.asyncio
 async def test_get_transactions_async():
-    client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
-    result = await client.get_transactions_async()
-    if result.data:
-        item = result.data[0]
-        await client.get_transaction_async(item.id)
+    async with QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT)) as client:
+        result = await client.get_transactions_async()
+        if result.data:
+            item = result.data[0]
+            await client.get_transaction_async(item.id)
