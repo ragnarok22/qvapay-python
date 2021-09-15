@@ -17,6 +17,30 @@ def test_error():
         assert True
 
 
+def test_auth_error_without_app_id():
+    try:
+        QvaPayClient.from_auth(QvaPayAuth(qvapay_app_secret=""))
+        assert False
+    except QvaPayError:
+        assert True
+
+
+def test_auth_error_without_app_secret():
+    try:
+        QvaPayClient.from_auth(QvaPayAuth(qvapay_app_id=""))
+        assert False
+    except QvaPayError:
+        assert True
+
+
+def test_auth_erro_without_app_id_and_secret():
+    try:
+        QvaPayClient.from_auth(QvaPayAuth(qvapay_app_id="", qvapay_app_secret=""))
+        assert False
+    except QvaPayError:
+        assert True
+
+
 def test_get_info():
     client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
     client.get_info()
