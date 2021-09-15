@@ -2,5 +2,10 @@
     "markdownlint.config": {
         "MD024": false,
         "MD041": false
-    }
+    },
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
