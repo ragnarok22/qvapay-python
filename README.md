@@ -129,6 +129,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://bio.link/lugodev"><img src="https://avatars.githubusercontent.com/u/18733370?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Carlos Lugones</b></sub></a><br /><a href="https://github.com/lugodev/Qvapay Python/commits?author=lugodev" title="Code">💻</a></td>
     <td align="center"><a href="http://codeshard.github.io/"><img src="https://avatars.githubusercontent.com/u/5880754?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ozkar L. Garcell</b></sub></a><br /><a href="https://github.com/lugodev/Qvapay Python/commits?author=codeshard" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/leynier"><img src="https://avatars.githubusercontent.com/u/36774373?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Leynier Gutiérrez González</b></sub></a><br /><a href="https://github.com/lugodev/Qvapay Python/commits?author=leynier" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jorgeajimenezl"><img src="https://avatars.githubusercontent.com/u/18174581?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jorge Alejandro Jimenez Luna</b></sub></a><br /><a href="https://github.com/lugodev/Qvapay Python/commits?author=jorgeajimenezl" title="Code">💻</a></td>
   </tr>
 </table>
 
