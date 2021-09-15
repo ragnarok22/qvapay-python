@@ -34,13 +34,11 @@ class TransactionDetail(Transaction):
         base = Transaction.from_json(json)
         return TransactionDetail(
             id=base.id,
-            user_id=base.user_id,
             app_id=base.app_id,
             amount=base.amount,
             description=base.description,
             remote_id=base.remote_id,
             status=base.status,
-            paid_by_user_id=base.paid_by_user_id,
             created_at=base.created_at,
             updated_at=base.updated_at,
             signed=base.signed,
