@@ -1,4 +1,23 @@
-## 0.1.0 (2021-09-05)
+## 0.2.0 (2021-09-15)
+
+### Fix
+
+- add aclose method for async with and use run_until_complete
+- remove user_id and paid_by_user_id properties from Transaction
+- add type hint in __enter__ method of QvaPayClient class
+
+### Feat
+
+- add cache to GitHub Actions
+- add context manager; updated README
+
+## v0.1.0 (2021-09-05)
+
+### Feat
+
+- add post init validation to QvaPayAuth
+- add not required status message to QvaPayError
+- improve implementation
 
 ### Fix
 
@@ -8,10 +27,6 @@
 ### Perf
 
 - remove pydantic dependency
-
-### Feat
-
-- improve implementation
 
 ## v0.0.3 (2021-08-30)
 
