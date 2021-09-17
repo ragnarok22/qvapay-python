@@ -1,5 +1,4 @@
 import asyncio
-
 from dataclasses import dataclass, field
 from types import TracebackType
 from typing import Optional, Type, Union
@@ -189,15 +188,19 @@ class QvaPayClient:
         if self.sync_client:
             self.sync_client.close()
         if self.async_client:
-            try:
-                # Schedule close underline resources and
-                # wait
-                asyncio.create_task(self.async_client.aclose()).result()
-            except RuntimeError:
-                # Skip error when no use async loops
-                pass
+            asyncio.get_event_loop().run_until_complete(self.async_client.aclose())
 
-    def __enter__(self) -> None:
+    async def aclose(self):
+        if self.sync_client:
+            self.sync_client.close()
+        if self.async_client:
+            await self.async_client.aclose()
+
+    def __enter__(self) -> "QvaPayClient":
+        return self
+
+    async def __aenter__(self) -> "QvaPayClient":
+        # Just syntactic sugar ;)
         return self
 
     def __exit__(
@@ -208,14 +211,10 @@ class QvaPayClient:
     ) -> None:
         self.close()
 
-    async def __aenter__(self) -> "QvaPayClient":
-        # Just syntactic sugar ;)
-        return self
-
     async def __aexit__(
         self,
         exc_type: Optional[Type[BaseException]],
         exc_val: Optional[BaseException],
         exc_tb: Optional[TracebackType],
     ) -> None:
-        self.close()
+        await self.aclose()

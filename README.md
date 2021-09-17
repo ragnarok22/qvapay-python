@@ -109,6 +109,11 @@ You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qv
 
 ## Migration guide
 
+### 0.1.0 -> 0.2.0
+
+- `user_id` of `Transaction` model was removed
+- `paid_by_user_id` of `Transaction` model was removed
+
 ### 0.0.3 -> 0.1.0
 
 - `from qvapay.v1 import *` instead of `from qvapay import *`
