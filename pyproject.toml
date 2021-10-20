@@ -26,18 +26,18 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-httpx = {extras = ["brotli"], version = "^0.19.0"}
+httpx = "^0.20.0"
 python-dateutil = "^2.8.2"
-python-dotenv = "^0.19.0"
+python-dotenv = "^0.19.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.4"
-flake8 = "^3.9.2"
-black = "^21.8b0"
+pytest = "^6.2.5"
+flake8 = "^4.0.1"
+black = "^21.9b0"
 isort = "^5.9.3"
-pytest-cov = "^2.12.1"
-pytest-asyncio = "^0.15.1"
-commitizen = "^2.18.0"
+pytest-cov = "^3.0.0"
+pytest-asyncio = "^0.16.0"
+commitizen = "^2.20.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
