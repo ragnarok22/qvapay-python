@@ -64,7 +64,7 @@ def test_get_transactions():
             client.get_transaction(item.id)
 
 
-@pytest_mark.asyncio
+@pytest_mark.anyio
 async def test_error_async():
     client = QvaPayClient("", "")
     try:
@@ -74,25 +74,25 @@ async def test_error_async():
         assert True
 
 
-@pytest_mark.asyncio
+@pytest_mark.anyio
 async def test_get_info_async():
     client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
     await client.get_info_async()
 
 
-@pytest_mark.asyncio
+@pytest_mark.anyio
 async def test_get_balance_async():
     client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
     await client.get_balance_async()
 
 
-@pytest_mark.asyncio
+@pytest_mark.anyio
 async def test_create_invoice_async():
     client = QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT))
     await client.create_invoice_async(random(), "Invoice for testing", str(uuid4()))
 
 
-@pytest_mark.asyncio
+@pytest_mark.anyio
 async def test_get_transactions_async():
     async with QvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT)) as client:
         result = await client.get_transactions_async()
