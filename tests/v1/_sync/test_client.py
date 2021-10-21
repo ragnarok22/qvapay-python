@@ -3,7 +3,8 @@ from uuid import uuid4
 
 from httpx import Timeout
 from pytest import mark as pytest_mark
-from qvapay.v1 import SyncQvaPayClient, QvaPayAuth, QvaPayError
+
+from qvapay.v1 import QvaPayAuth, QvaPayError, SyncQvaPayClient
 
 TIMEOUT = 20
 
@@ -38,9 +39,7 @@ def test_create_invoice():
 
 @pytest_mark.anyio
 def test_get_transactions():
-    with SyncQvaPayClient.from_auth(
-        QvaPayAuth(), timeout=Timeout(TIMEOUT)
-    ) as client:
+    with SyncQvaPayClient.from_auth(QvaPayAuth(), timeout=Timeout(TIMEOUT)) as client:
         result = client.get_transactions()
         if result.data:
             item = result.data[0]
