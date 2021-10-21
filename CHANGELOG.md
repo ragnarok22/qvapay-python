@@ -1,3 +1,10 @@
+## 0.3.0 (2021-10-20)
+
+### Feat
+
+- integrate pre-commit for avoid format errors
+- split implementation in two classes
+
 ## 0.2.0 (2021-09-15)
 
 ### Fix

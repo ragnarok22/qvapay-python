@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qvapay"
-version = "0.2.0"
+version = "0.3.0"
 description = "Python SDK for the QvaPay API"
 authors = [
     "Carlos Lugones <contact@lugodev.com>",
