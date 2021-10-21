@@ -117,6 +117,16 @@ transactions = await client.get_transactions(page=1)
 
 You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
 
+## For developers
+
+The `_sync` folders were generated automatically executing the command `unasync qvapay tests`.
+
+The code that is added in the `_async` folders is automatically transformed.
+
+So every time to make a change you must run the command `unasync qvapay tests` to regenerate the folders `_sync` with the synchronous version of the implementation.
+
+Improve `tests` implementation and add `pre-commit` system to ensure format and style.
+
 ## Migration guide
 
 ### 0.2.0 -> 0.3.0
