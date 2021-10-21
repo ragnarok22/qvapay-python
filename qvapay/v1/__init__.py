@@ -1,5 +1,6 @@
+from ._async.client import AsyncQvaPayClient  # noqa: F401
+from ._sync.client import SyncQvaPayClient  # noqa: F401
 from .auth import QvaPayAuth  # noqa: F401
-from .client import QvaPayClient  # noqa: F401
 from .errors import QvaPayError  # noqa: F401
 from .models.info import Info  # noqa: F401
 from .models.invoice import Invoice  # noqa: F401
