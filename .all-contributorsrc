@@ -1,5 +1,5 @@
 {
-  "projectName": "Qvapay Python",
+  "projectName": "qvapay-python",
   "projectOwner": "lugodev",
   "repoType": "github",
   "repoHost": "https://github.com",
@@ -45,8 +45,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ragnarok22",
+      "name": "Reinier Hernández",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8838803?v=4",
+      "profile": "https://blog.ragnarok22.dev",
+      "contributions": [
+        "bug"
+      ]
     }
-    
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
