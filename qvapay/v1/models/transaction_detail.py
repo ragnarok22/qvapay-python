@@ -23,8 +23,8 @@ class TransactionDetail(Transaction):
         self.owner.__post_init__()
         return super().__post_init__()
 
-    @staticmethod
-    def from_json(json: Any) -> "TransactionDetail":
+    @classmethod
+    def from_json(cls, json: Any) -> "TransactionDetail":
         paid_by = PaidBy.from_json(json["paid_by"])
         app = Info.from_json(json["app"])
         owner = Owner.from_json(json["owner"])

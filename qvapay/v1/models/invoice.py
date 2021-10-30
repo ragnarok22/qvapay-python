@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
+from ..utils import parse_json
+
 
 @dataclass
 class Invoice:
@@ -28,10 +30,10 @@ class Invoice:
         self.url = str(self.url)
         self.signed_url = str(self.signed_url)
 
-    @staticmethod
-    def from_json(json: Any) -> "Invoice":
+    @classmethod
+    def from_json(cls, json: Any) -> "Invoice":
         json["transation_id"] = json["transation_uuid"]
         json["signed_url"] = json["signedUrl"]
         del json["transation_uuid"]
         del json["signedUrl"]
-        return Invoice(**json)
+        return parse_json(cls, **json)
