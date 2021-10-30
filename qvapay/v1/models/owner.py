@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Any, Optional
 from uuid import UUID
 
+from ..utils import parse_json
+
 
 @dataclass
 class Owner:
@@ -22,8 +24,8 @@ class Owner:
         self.kyc = bool(str(self.kyc))
         self.bio = str(self.bio) if self.bio is not None else None
 
-    @staticmethod
-    def from_json(json: Any) -> "Owner":
+    @classmethod
+    def from_json(cls, json: Any) -> "Owner":
         json["id"] = json["uuid"]
         del json["uuid"]
-        return Owner(**json)
+        return parse_json(cls, **json)

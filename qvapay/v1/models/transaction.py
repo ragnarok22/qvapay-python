@@ -5,6 +5,8 @@ from uuid import UUID
 
 from dateutil.parser import parse
 
+from ..utils import parse_json
+
 
 @dataclass
 class Transaction:
@@ -33,8 +35,9 @@ class Transaction:
         self.updated_at = parse(str(self.updated_at))
         self.signed = int(str(self.signed)) if self.signed is not None else None
 
-    @staticmethod
-    def from_json(json: Any) -> "Transaction":
+    @classmethod
+    def from_json(cls, json: Any) -> "Transaction":
         json["id"] = json["uuid"]
         del json["uuid"]
-        return Transaction(**json, signed=json["signed"] if "signed" in json else None)
+        signed = json["signed"] if "signed" in json else None
+        return parse_json(cls, **json, signed=signed)

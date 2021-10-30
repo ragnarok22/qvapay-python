@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from ..utils import parse_json
+
 
 @dataclass
 class Link:
@@ -13,6 +15,6 @@ class Link:
         self.label = str(self.label)
         self.active = bool(str(self.active))
 
-    @staticmethod
-    def from_json(json: Any) -> "Link":
-        return Link(**json)
+    @classmethod
+    def from_json(cls, json: Any) -> "Link":
+        return parse_json(cls, **json)

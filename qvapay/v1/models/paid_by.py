@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any
 
+from ..utils import parse_json
+
 
 @dataclass
 class PaidBy:
@@ -13,6 +15,6 @@ class PaidBy:
         self.name = str(self.name)
         self.logo = str(self.logo)
 
-    @staticmethod
-    def from_json(json: Any) -> "PaidBy":
-        return PaidBy(**json)
+    @classmethod
+    def from_json(cls, json: Any) -> "PaidBy":
+        return parse_json(cls, **json)
