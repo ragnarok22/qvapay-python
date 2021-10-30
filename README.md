@@ -37,20 +37,20 @@ Create your account to process payments through **QvaPay** at [qvapay.com/regist
 
 ## Using the client
 
-First, import the `QvaPayClient` class and create your **QvaPay** client using your app credentials.
+First, import the `AsyncQvaPayClient` (or `SyncQvaPayClient`) class and create your **QvaPay** asynchronous (or synchronous) client using your app credentials.
 
 ```python
-from qvapay.v1 import QvaPayClient
+from qvapay.v1 import AsyncQvaPayClient
 
-client = QvaPayClient(app_id, app_secret)
+client = AsyncQvaPayClient(app_id, app_secret)
 ```
 
-It is also possible to use the `QvaPayAuth` class (which by default obtains its properties from environment variables or from the content of the `.env` file) and the static method `QvaPayClient.from_auth` to initialize the client.
+It is also possible to use the `QvaPayAuth` class (which by default obtains its properties from environment variables or from the content of the `.env` file) and the static method `AsyncQvaPayClient.from_auth` (or `SyncQvaPayClient.from_auth`) to initialize the client.
 
 ```python
-from qvapay.v1 import QvaPayAuth, QvaPayClient
+from qvapay.v1 import AsyncQvaPayClient, QvaPayAuth
 
-client = QvaPayClient.from_auth(QvaPayAuth())
+client = AsyncQvaPayClient.from_auth(QvaPayAuth())
 ```
 
 ### Use context manager
@@ -58,7 +58,15 @@ client = QvaPayClient.from_auth(QvaPayAuth())
 The recommended way to use a client is as a context manager. For example:
 
 ```python
-[async] with QvaPayClient(...) as client:
+async with AsyncQvaPayClient(...) as client:
+    # Do anything you want
+    ...
+```
+
+or
+
+```python
+with SyncQvaPayClient(...) as client:
     # Do anything you want
     ...
 ```
@@ -66,19 +74,25 @@ The recommended way to use a client is as a context manager. For example:
 ### Get your app info
 
 ```python
-info = client.get_info()
+# Use await when using AsyncQvaPayClient
+# With SyncQvaPayClient it is not necessary.
+info = await client.get_info()
 ```
 
 ### Get your account balance
 
 ```python
-balance = client.get_balance()
+# Use await when using AsyncQvaPayClient
+# With SyncQvaPayClient it is not necessary.
+balance = await client.get_balance()
 ```
 
 ### Create an invoice
 
 ```python
-transaction = client.create_invoice(
+# Use await when using AsyncQvaPayClient
+# With SyncQvaPayClient it is not necessary.
+transaction = await client.create_invoice(
     amount=10,
     description='Ebook',
     remote_id='EE-BOOk-123' # example remote invoice id
@@ -88,26 +102,36 @@ transaction = client.create_invoice(
 ### Get transaction
 
 ```python
-transaction = client.get_transaction(id)
+# Use await when using AsyncQvaPayClient
+# With SyncQvaPayClient it is not necessary.
+transaction = await client.get_transaction(id)
 ```
 
 ### Get transactions
 
 ```python
-transactions = client.get_transactions(page=1)
-```
-
-## Async features
-
-You can also use the asynchronous version of the methods simply by appending `_async` to the method name at the end. For example:
-
-```python
-info = await client.get_info_async()
+# Use await when using AsyncQvaPayClient
+# With SyncQvaPayClient it is not necessary.
+transactions = await client.get_transactions(page=1)
 ```
 
 You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
 
+## For developers
+
+The `_sync` folders were generated automatically executing the command `unasync qvapay tests`.
+
+The code that is added in the `_async` folders is automatically transformed.
+
+So every time to make a change you must run the command `unasync qvapay tests` to regenerate the folders `_sync` with the synchronous version of the implementation.
+
+Improve `tests` implementation and add `pre-commit` system to ensure format and style.
+
 ## Migration guide
+
+### 0.2.0 -> 0.3.0
+
+- `QvaPayClient` was divided into two classes: `AsyncQvaPayClient` and `SyncQvaPayClient`. Both classes have the same methods and properties, with the difference that the methods in `AsyncQvaPayClient` are asynchronous and in `SyncQvaPayClient` are synchronous.
 
 ### 0.1.0 -> 0.2.0
 

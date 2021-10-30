@@ -1,4 +1,15 @@
-## 0.2.0 (2021-09-15)
+## v0.3.0 (2021-10-30)
+
+### Fix
+
+- improve parsing method for evicting errors by fields aggregations
+
+### Feat
+
+- integrate pre-commit for avoid format errors
+- split implementation in two classes
+
+## v0.2.0 (2021-09-17)
 
 ### Fix
 
