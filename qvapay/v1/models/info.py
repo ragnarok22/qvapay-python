@@ -5,6 +5,8 @@ from uuid import UUID
 
 from dateutil.parser import parse
 
+from ..utils import parse_json
+
 
 @dataclass
 class Info:
@@ -43,10 +45,10 @@ class Info:
         self.created_at = parse(str(self.created_at))
         self.updated_at = parse(str(self.updated_at))
 
-    @staticmethod
-    def from_json(json: Any) -> "Info":
+    @classmethod
+    def from_json(cls, json: Any) -> "Info":
         json["id"] = json["uuid"]
         json["description"] = json["desc"]
         del json["uuid"]
         del json["desc"]
-        return Info(**json)
+        return parse_json(cls, **json)

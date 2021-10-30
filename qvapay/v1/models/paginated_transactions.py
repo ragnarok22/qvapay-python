@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional
 
+from ..utils import parse_json
 from .link import Link
 from .transaction import Transaction
 
@@ -42,8 +43,8 @@ class PaginatedTransactions:
         for item in self.data:
             item.__post_init__()
 
-    @staticmethod
-    def from_json(json: Any) -> "PaginatedTransactions":
+    @classmethod
+    def from_json(cls, json: Any) -> "PaginatedTransactions":
         json["from_index"] = json["from"]
         json["to_index"] = json["to"]
         del json["from"]
@@ -56,4 +57,4 @@ class PaginatedTransactions:
             data.append(Transaction.from_json(item))
         del json["links"]
         del json["data"]
-        return PaginatedTransactions(**json, links=links, data=data)
+        return parse_json(cls, **json, links=links, data=data)
