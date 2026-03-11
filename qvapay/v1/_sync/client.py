@@ -2,11 +2,8 @@ from dataclasses import dataclass, field
 from typing import Union
 from uuid import UUID
 
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
-from httpx._types import TimeoutTypes
-
 from ..auth import QvaPayAuth
-from ..http_clients import SyncClient
+from ..http_clients import DEFAULT_TIMEOUT, SyncClient, TimeoutTypes
 from ..models.info import Info
 from ..models.invoice import Invoice
 from ..models.paginated_transactions import PaginatedTransactions
@@ -25,7 +22,7 @@ class SyncQvaPayClient:
 
     app_id: str
     app_secret: str
-    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT_CONFIG)
+    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
         self.auth_params = {"app_id": self.app_id, "app_secret": self.app_secret}
@@ -49,7 +46,7 @@ class SyncQvaPayClient:
     @staticmethod
     def from_auth(
         auth: QvaPayAuth,
-        timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+        timeout: TimeoutTypes = DEFAULT_TIMEOUT,
     ) -> "SyncQvaPayClient":
         return SyncQvaPayClient(auth.qvapay_app_id, auth.qvapay_app_secret, timeout)
 

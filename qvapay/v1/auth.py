@@ -6,18 +6,18 @@ from .errors import QvaPayError
 
 @dataclass
 class QvaPayAuth:
-    qvapay_app_id: str = field(default_factory=lambda: environ.get("QVAPAY_APP_ID", ""))
-    qvapay_app_secret: str = field(
-        default_factory=lambda: environ.get("QVAPAY_APP_SECRET", "")
+    uuid: str = field(default_factory=lambda: environ.get("QVAPAY_UUID", ""))
+    secret_key: str = field(
+        default_factory=lambda: environ.get("QVAPAY_SECRET_KEY", "")
     )
 
     def __post_init__(self):
-        if not self.qvapay_app_id and not self.qvapay_app_secret:
-            raise QvaPayError(0, "QVAPAY_APP_ID and QVAPAY_APP_SECRET are not set")
-        elif not self.qvapay_app_id:
-            raise QvaPayError(0, "QVAPAY_APP_ID is not set")
-        elif not self.qvapay_app_secret:
-            raise QvaPayError(0, "QVAPAY_APP_SECRET is not set")
+        if not self.uuid and not self.secret_key:
+            raise QvaPayError(0, "QVAPAY_UUID and QVAPAY_SECRET_KEY are not set")
+        elif not self.uuid:
+            raise QvaPayError(0, "QVAPAY_UUID is not set")
+        elif not self.secret_key:
+            raise QvaPayError(0, "QVAPAY_SECRET_KEY is not set")
 
 
 @dataclass

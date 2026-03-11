@@ -15,21 +15,23 @@ from ..utils import validate_response
 class AsyncQvaPayClient:
     """
     Creates a QvaPay merchant client.
-    * app_id: QvaPay app id.
-    * app_secret: QvaPay app secret.
+    * uuid: QvaPay app UUID.
+    * secret_key: QvaPay app secret key.
     Get your app credentials at: https://qvapay.com/apps/create
     """
 
-    app_id: str
-    app_secret: str
+    uuid: str
+    secret_key: str
     timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
-        self.auth_params = {"app_id": self.app_id, "app_secret": self.app_secret}
-        self.base_url = "https://qvapay.com/api/v1"
+        self.auth_body = {
+            "uuid": self.uuid,
+            "secret_key": self.secret_key,
+        }
+        self.base_url = "https://api.qvapay.com/v2"
         self.http_client = AsyncClient(
             base_url=self.base_url,
-            params=self.auth_params,
             timeout=self.timeout,
             follow_redirects=True,
         )
@@ -48,14 +50,14 @@ class AsyncQvaPayClient:
         auth: QvaPayAuth,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT,
     ) -> "AsyncQvaPayClient":
-        return AsyncQvaPayClient(auth.qvapay_app_id, auth.qvapay_app_secret, timeout)
+        return AsyncQvaPayClient(auth.uuid, auth.secret_key, timeout)
 
     async def get_info(self) -> Info:
         """
         Get info relating to your QvaPay app.
         https://qvapay.com/docs/1.0/app_info
         """
-        response = await self.http_client.get("info")
+        response = await self.http_client.post("info", json=self.auth_body)
         validate_response(response)
         return Info.from_json(response.json())
 
@@ -64,7 +66,7 @@ class AsyncQvaPayClient:
         Get your QvaPay balance.
         https://qvapay.com/docs/1.0/balance
         """
-        response = await self.http_client.get("balance")
+        response = await self.http_client.post("balance", json=self.auth_body)
         validate_response(response)
         return float(response.json())
 
@@ -74,7 +76,8 @@ class AsyncQvaPayClient:
         * page: Page to be fetched.
         https://qvapay.com/docs/1.0/transactions
         """
-        response = await self.http_client.get("transactions", params={"page": page})
+        body = {**self.auth_body, "page": page}
+        response = await self.http_client.post("transactions", json=body)
         validate_response(response)
         return PaginatedTransactions.from_json(response.json())
 
@@ -84,7 +87,9 @@ class AsyncQvaPayClient:
         * id: Transaction uuid returned by QvaPay when created.
         https://qvapay.com/docs/1.0/transaction
         """
-        response = await self.http_client.get(f"transaction/{id}")
+        response = await self.http_client.post(
+            f"transactions/{id}", json=self.auth_body
+        )
         validate_response(response)
         return TransactionDetail.from_json(response.json())
 
@@ -107,12 +112,13 @@ class AsyncQvaPayClient:
           increase security, introducing an expiration datetime. Optional.
         https://qvapay.com/docs/1.0/create_invoice
         """
-        params = {
+        body = {
+            **self.auth_body,
             "amount": amount,
             "description": description,
             "remote_id": remote_id,
             "signed": int(signed),
         }
-        response = await self.http_client.get("create_invoice", params=params)
+        response = await self.http_client.post("create_invoice", json=body)
         validate_response(response)
         return Invoice.from_json(response.json())
