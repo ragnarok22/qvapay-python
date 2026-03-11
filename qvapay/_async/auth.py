@@ -75,13 +75,12 @@ async def request_pin(
 async def check(
     access_token: str,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
-) -> dict:
-    """Check if an access token is valid."""
+) -> None:
+    """Check if an access token is valid. Raises QvaPayError if not."""
     headers = {"Authorization": f"Bearer {access_token}"}
     async with _client(timeout, headers=headers) as client:
         response = await client.post("auth/check")
         validate_response(response)
-        return response.json()
 
 
 async def logout(
