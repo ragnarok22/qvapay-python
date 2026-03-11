@@ -6,4 +6,4 @@ tests: install
 	uv run black . --check
 	uv run isort . --profile=black
 	uv run pre-commit run --all-files
-	uv run pytest --cov=./ --cov-report=xml
+	uv run pytest --cov=./ --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
