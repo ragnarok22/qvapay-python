@@ -42,7 +42,6 @@ dev = [
     "ruff>=0.14.0",
     "pytest-cov>=6.0.0",
     "anyio[trio]>=4.0.0",
-    "unasync-cli>=0.0.9",
     "pre-commit>=4.0.0",
 ]
 

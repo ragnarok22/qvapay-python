@@ -5,6 +5,7 @@ import pytest
 
 from qvapay._async import auth as async_auth
 from qvapay._sync import auth as sync_auth
+from qvapay.errors import QvaPayError
 from qvapay.models.auth_token import AuthToken
 from qvapay.models.user import User
 
@@ -40,7 +41,6 @@ LOGIN_RESPONSE = {
         "p2p_enabled": True,
     },
 }
-
 
 REGISTER_RESPONSE = {
     "message": "¡Bienvenido a QvaPay Juan Perez!",
@@ -259,3 +259,274 @@ class TestSyncLogin:
         payload = mock_client.post.call_args[1]["json"]
         assert "two_factor_code" not in payload
         assert "remember" not in payload
+
+
+# ── Async register tests ─────────────────────────────────────────────
+
+
+class TestAsyncRegister:
+    @pytest.mark.anyio
+    async def test_register_basic(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_RESPONSE, status_code=201
+        )
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            result = await async_auth.register("Juan", "juan@example.com", "secret123")
+
+        mock_client.post.assert_called_once_with(
+            "auth/register",
+            json={
+                "name": "Juan",
+                "email": "juan@example.com",
+                "password": "secret123",
+                "terms": True,
+            },
+        )
+        assert isinstance(result, AuthToken)
+        assert result.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+        assert result.me is None
+
+    @pytest.mark.anyio
+    async def test_register_with_all_params(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_RESPONSE, status_code=201
+        )
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            await async_auth.register(
+                "Juan",
+                "juan@example.com",
+                "secret123",
+                lastname="Perez",
+                invite="abc",
+            )
+
+        payload = mock_client.post.call_args[1]["json"]
+        assert payload["lastname"] == "Perez"
+        assert payload["invite"] == "abc"
+
+    @pytest.mark.anyio
+    async def test_register_excludes_optional_when_not_set(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_RESPONSE, status_code=201
+        )
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            await async_auth.register("A", "a@b.com", "pw")
+
+        payload = mock_client.post.call_args[1]["json"]
+        assert "lastname" not in payload
+        assert "invite" not in payload
+
+    @pytest.mark.anyio
+    async def test_register_422_raises_error(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_ERROR_RESPONSE, status_code=422
+        )
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                await async_auth.register("A", "dup@b.com", "pw")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message
+
+
+# ── Sync register tests ──────────────────────────────────────────────
+
+
+class TestSyncRegister:
+    def test_register_basic(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_RESPONSE, status_code=201
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            result = sync_auth.register("Juan", "juan@example.com", "secret123")
+
+        mock_client.post.assert_called_once_with(
+            "auth/register",
+            json={
+                "name": "Juan",
+                "email": "juan@example.com",
+                "password": "secret123",
+                "terms": True,
+            },
+        )
+        assert isinstance(result, AuthToken)
+        assert result.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+
+    def test_register_with_all_params(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_RESPONSE, status_code=201
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            sync_auth.register(
+                "Juan",
+                "juan@example.com",
+                "secret123",
+                lastname="Perez",
+                invite="abc",
+            )
+
+        payload = mock_client.post.call_args[1]["json"]
+        assert payload["lastname"] == "Perez"
+        assert payload["invite"] == "abc"
+
+    def test_register_422_raises_error(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_ERROR_RESPONSE, status_code=422
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.register("A", "dup@b.com", "pw")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message
+
+
+# ── Async request_pin tests ──────────────────────────────────────────
+
+
+class TestAsyncRequestPin:
+    @pytest.mark.anyio
+    async def test_request_pin(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response({}, status_code=200)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            result = await async_auth.request_pin("user@example.com")
+
+        mock_client.post.assert_called_once_with(
+            "auth/request_pin",
+            json={"email": "user@example.com"},
+        )
+        assert result is None
+
+    @pytest.mark.anyio
+    async def test_request_pin_422_raises_error(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response(
+            LOGIN_ERROR_VALIDATION, status_code=422
+        )
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                await async_auth.request_pin("")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message
+
+
+# ── Sync request_pin tests ───────────────────────────────────────────
+
+
+class TestSyncRequestPin:
+    def test_request_pin(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response({}, status_code=200)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            result = sync_auth.request_pin("user@example.com")
+
+        mock_client.post.assert_called_once_with(
+            "auth/request_pin",
+            json={"email": "user@example.com"},
+        )
+        assert result is None
+
+    def test_request_pin_422_raises_error(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            LOGIN_ERROR_VALIDATION, status_code=422
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.request_pin("")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message
+
+
+# ── Error handling tests ─────────────────────────────────────────────
+
+
+class TestErrorHandling:
+    def test_login_password_mismatch(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            LOGIN_ERROR_PASSWORD, status_code=422
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.login("user@example.com", "wrong")
+
+        assert exc_info.value.status_code == 422
+        assert exc_info.value.status_message == "Password mismatch"
+
+    def test_login_validation_errors_as_list(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            LOGIN_ERROR_VALIDATION, status_code=422
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.login("", "")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message
+        assert "password" in exc_info.value.status_message
+
+    def test_register_errors_list(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response(
+            REGISTER_ERROR_RESPONSE, status_code=422
+        )
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.register("A", "dup@b.com", "pw")
+
+        assert exc_info.value.status_code == 422
+        assert "email" in exc_info.value.status_message

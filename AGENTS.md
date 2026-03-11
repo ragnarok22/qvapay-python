@@ -12,7 +12,6 @@ Both `AsyncQvaPayClient` and `SyncQvaPayClient` expose five methods: `get_info()
 - `uv run pytest` runs the test suite without the linting steps.
 - `uv run pytest tests/v1/_async/test_client.py` runs a focused test module.
 - `uv run pytest tests/v1/_sync/test_client.py::test_get_info` runs a single test.
-- `uv run unasync qvapay tests` regenerates `qvapay/v1/_sync/` and `tests/v1/_sync/` after async changes.
 - `uv build` creates distributable packages in `dist/`.
 
 ## Coding Style & Naming Conventions

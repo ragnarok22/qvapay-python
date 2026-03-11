@@ -77,18 +77,6 @@ wheels = [
 ]
 
 [[package]]
-name = "click"
-version = "8.3.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/3d/fa/656b739db8587d7b5dfa22e22ed02566950fbfbcdc20311993483657a5c0/click-8.3.1.tar.gz", hash = "sha256:12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a", size = 295065, upload-time = "2025-11-15T20:45:42.706Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/78/01c019cdb5d6498122777c1a43056ebb3ebfeef2076d9d026bfe15583b2b/click-8.3.1-py3-none-any.whl", hash = "sha256:981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6", size = 108274, upload-time = "2025-11-15T20:45:41.139Z" },
-]
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -515,7 +503,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
-    { name = "unasync-cli" },
 ]
 
 [package.metadata]
@@ -528,7 +515,6 @@ dev = [
     { name = "pytest", specifier = ">=8.0.0" },
     { name = "pytest-cov", specifier = ">=6.0.0" },
     { name = "ruff", specifier = ">=0.14.0" },
-    { name = "unasync-cli", specifier = ">=0.0.9" },
 ]
 
 [[package]]
@@ -554,15 +540,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/28/3a/950367aee7c69027f4f422059227b290ed780366b6aecee5de5039d50fa8/ruff-0.15.5-py3-none-win32.whl", hash = "sha256:732e5ee1f98ba5b3679029989a06ca39a950cced52143a0ea82a2102cb592b74", size = 10551676, upload-time = "2026-03-05T20:06:13.705Z" },
     { url = "https://files.pythonhosted.org/packages/b8/00/bf077a505b4e649bdd3c47ff8ec967735ce2544c8e4a43aba42ee9bf935d/ruff-0.15.5-py3-none-win_amd64.whl", hash = "sha256:821d41c5fa9e19117616c35eaa3f4b75046ec76c65e7ae20a333e9a8696bc7fe", size = 11678972, upload-time = "2026-03-05T20:06:45.379Z" },
     { url = "https://files.pythonhosted.org/packages/fe/4e/cd76eca6db6115604b7626668e891c9dd03330384082e33662fb0f113614/ruff-0.15.5-py3-none-win_arm64.whl", hash = "sha256:b498d1c60d2fe5c10c45ec3f698901065772730b411f164ae270bb6bfcc4740b", size = 10965572, upload-time = "2026-03-05T20:06:16.984Z" },
-]
-
-[[package]]
-name = "setuptools"
-version = "58.5.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1e/00/05f51ceab8d3b9be4295000d8be4c830c53e5477755888994e9825606cd9/setuptools-58.5.3.tar.gz", hash = "sha256:dae6b934a965c8a59d6d230d3867ec408bb95e73bd538ff77e71fedf1eaca729", size = 2269854, upload-time = "2021-11-04T23:33:38.499Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/70/e9/84e2865fddfaba4506bc5d293d2a535bf27e31b12ca16d31564f8ce28cdb/setuptools-58.5.3-py3-none-any.whl", hash = "sha256:a481fbc56b33f5d8f6b33dce41482e64c68b668be44ff42922903b03872590bf", size = 946828, upload-time = "2021-11-04T23:33:37.023Z" },
 ]
 
 [[package]]
@@ -656,47 +633,12 @@ wheels = [
 ]
 
 [[package]]
-name = "typer"
-version = "0.4.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fb/9e/8ae5ef480622282fc98507c0226e95de0accdf5e98ab7f57a5c8ba054339/typer-0.4.2.tar.gz", hash = "sha256:b8261c6c0152dd73478b5ba96ba677e5d6948c715c310f7c91079f311f62ec03", size = 223132, upload-time = "2022-07-02T18:05:28.861Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/ea/b565bc44a1af5278ef2ff9d571cdb4f4bc31fd450b0630441c93401c243c/typer-0.4.2-py3-none-any.whl", hash = "sha256:023bae00d1baf358a6cc7cea45851639360bb716de687b42b0a4641cd99173f1", size = 27955, upload-time = "2022-07-02T18:05:26.022Z" },
-]
-
-[[package]]
 name = "typing-extensions"
 version = "4.15.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/72/94/1a15dd82efb362ac84269196e94cf00f187f7ed21c242792a923cdb1c61f/typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466", size = 109391, upload-time = "2025-08-25T13:49:26.313Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/18/67/36e9267722cc04a6b9f15c7f3441c2363321a3ea07da7ae0c0707beb2a9c/typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548", size = 44614, upload-time = "2025-08-25T13:49:24.86Z" },
-]
-
-[[package]]
-name = "unasync"
-version = "0.5.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f7/ce/eaa16d97812685a14a3b04f8554c6a8ef432b9aee816c4e98dd5f3e75baa/unasync-0.5.0.tar.gz", hash = "sha256:b675d87cf56da68bd065d3b7a67ac71df85591978d84c53083c20d79a7e5096d", size = 17219, upload-time = "2020-05-03T04:34:18.407Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c8/56/ab76753489cab5a8e7dcbb1fb758f014de0b50b59d519c4f4c04edc79eda/unasync-0.5.0-py3-none-any.whl", hash = "sha256:8d4536dae85e87b8751dfcc776f7656fd0baf54bb022a7889440dc1b9dc3becb", size = 10225, upload-time = "2020-05-03T04:34:16.653Z" },
-]
-
-[[package]]
-name = "unasync-cli"
-version = "0.0.9"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "setuptools" },
-    { name = "typer" },
-    { name = "unasync" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/e0/93258a6bd980f456e6b6f9c438ebcac84e79df3e2c67c9970e551532db45/unasync-cli-0.0.9.tar.gz", hash = "sha256:ca9d8c57ebb68911f8f8f68f243c7f6d0bb246ee3fd14743bc51c8317e276554", size = 4413, upload-time = "2021-10-23T06:40:54.565Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/32/c466a04f93123302dc0a648654d6e16a2e5eca3961d9144a46a27f9f6b22/unasync_cli-0.0.9-py3-none-any.whl", hash = "sha256:f96c42fb2862efa555ce6d6415a5983ceb162aa0e45be701656d20a955c7c540", size = 4751, upload-time = "2021-10-23T06:40:53.012Z" },
 ]
 
 [[package]]
