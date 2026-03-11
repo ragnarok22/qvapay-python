@@ -4,8 +4,17 @@ help: ## Show this help message
 install: ## Install dependencies
 	uv sync
 
+format: ## Format code with black and isort
+	uv run black .
+	uv run isort . --profile=black
+
+lint: ## Run linters (flake8, black --check, isort --check)
+	uv run flake8 . --count --show-source --statistics --max-line-length=88 --extend-ignore=E203 --exclude=.venv
+	uv run black . --check
+	uv run isort . --check --profile=black
+
 tests: install ## Run linters and tests with coverage
-	uv run flake8 . --count --show-source --statistics --max-line-length=88 --extend-ignore=E203
+	uv run flake8 . --count --show-source --statistics --max-line-length=88 --extend-ignore=E203 --exclude=.venv
 	uv run black . --check
 	uv run isort . --profile=black
 	uv run pre-commit run --all-files
