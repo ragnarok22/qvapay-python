@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from ..http import BASE_URL, DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.coin import Coin, CoinCategory
@@ -24,13 +24,24 @@ async def list(
 
 
 async def list_v2(
+    *,
+    enabled_in: Optional[bool] = None,
+    enabled_out: Optional[bool] = None,
+    enabled_p2p: Optional[bool] = None,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
-) -> List[CoinCategory]:
-    """Get available coins (v2 format)."""
+) -> List[Coin]:
+    """Get operational coins with optional filtering."""
+    params: dict = {}
+    if enabled_in is not None:
+        params["enabled_in"] = str(enabled_in).lower()
+    if enabled_out is not None:
+        params["enabled_out"] = str(enabled_out).lower()
+    if enabled_p2p is not None:
+        params["enabled_p2p"] = str(enabled_p2p).lower()
     async with _client(timeout) as client:
-        response = await client.get("v2/coins")
+        response = await client.get("coins/v2", params=params)
         validate_response(response)
-        return [CoinCategory.from_json(item) for item in response.json()]
+        return [Coin.from_json(item) for item in response.json()]
 
 
 async def get(

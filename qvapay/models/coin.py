@@ -19,6 +19,7 @@ class Coin:
     min_in: str
     min_out: str
     coins_categories_id: Optional[int] = None
+    network: Optional[str] = None
     working_data: Optional[str] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
