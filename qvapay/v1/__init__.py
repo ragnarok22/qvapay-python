@@ -1,8 +1,10 @@
 from ._async.client import AsyncQvaPayClient  # noqa: F401
 from ._async.user_client import AsyncQvaPayUserClient  # noqa: F401
 from ._sync.client import SyncQvaPayClient  # noqa: F401
-from .auth import QvaPayAuth  # noqa: F401
-from .auth import QvaPayUserAuth  # noqa: F401
+from .auth import (
+    QvaPayAuth,  # noqa: F401
+    QvaPayUserAuth,  # noqa: F401
+)
 from .errors import QvaPayError  # noqa: F401
 from .models.auth_token import AuthToken  # noqa: F401
 from .models.coin import Coin  # noqa: F401
