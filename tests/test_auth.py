@@ -10,10 +10,10 @@ from qvapay.models.auth_token import AuthToken
 from qvapay.models.user import User
 
 LOGIN_RESPONSE = {
-    "accessToken": "104510|$2b$10$QzRetQodABPVePrtMx95P",
+    "accessToken": "token123abc",
     "token_type": "Bearer",
     "me": {
-        "uuid": "12b1e145-82ce-480a-b5c6-1a681a125f0a",
+        "uuid": "user123abc",
         "username": "skymind",
         "name": "SkyMind",
         "lastname": "Payments",
@@ -43,8 +43,8 @@ LOGIN_RESPONSE = {
 }
 
 REGISTER_RESPONSE = {
-    "message": "¡Bienvenido a QvaPay Juan Perez!",
-    "accessToken": "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ",
+    "message": "Welcome to QvaPay Juan Perez!",
+    "accessToken": "regtoken123abc",
 }
 
 REGISTER_ERROR_RESPONSE = {
@@ -75,13 +75,13 @@ def _mock_response(
     )
 
 
-# ── Model tests ──────────────────────────────────────────────────────
+# -- Model tests -------------------------------------------------------------
 
 
 class TestUser:
     def test_from_json(self):
         user = User.from_json(LOGIN_RESPONSE["me"])
-        assert user.uuid == "12b1e145-82ce-480a-b5c6-1a681a125f0a"
+        assert user.uuid == "user123abc"
         assert user.username == "skymind"
         assert user.name == "SkyMind"
         assert user.lastname == "Payments"
@@ -118,13 +118,13 @@ class TestUser:
 class TestAuthToken:
     def test_from_json_aliases_access_token(self):
         token = AuthToken.from_json(LOGIN_RESPONSE)
-        assert token.access_token == "104510|$2b$10$QzRetQodABPVePrtMx95P"
+        assert token.access_token == "token123abc"
         assert token.token_type == "Bearer"
 
     def test_from_json_deserializes_me(self):
         token = AuthToken.from_json(LOGIN_RESPONSE)
         assert isinstance(token.me, User)
-        assert token.me.uuid == "12b1e145-82ce-480a-b5c6-1a681a125f0a"
+        assert token.me.uuid == "user123abc"
         assert token.me.username == "skymind"
 
     def test_from_json_without_me(self):
@@ -135,12 +135,12 @@ class TestAuthToken:
 
     def test_from_json_register_response(self):
         token = AuthToken.from_json(REGISTER_RESPONSE)
-        assert token.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+        assert token.access_token == "regtoken123abc"
         assert token.token_type == "Bearer"
         assert token.me is None
 
 
-# ── Async login tests ────────────────────────────────────────────────
+# -- Async login tests -------------------------------------------------------
 
 
 class TestAsyncLogin:
@@ -159,7 +159,7 @@ class TestAsyncLogin:
             json={"email": "user@example.com", "password": "secret"},
         )
         assert isinstance(result, AuthToken)
-        assert result.access_token == "104510|$2b$10$QzRetQodABPVePrtMx95P"
+        assert result.access_token == "token123abc"
         assert isinstance(result.me, User)
 
     @pytest.mark.anyio
@@ -203,7 +203,7 @@ class TestAsyncLogin:
         assert "remember" not in payload
 
 
-# ── Sync login tests ─────────────────────────────────────────────────
+# -- Sync login tests --------------------------------------------------------
 
 
 class TestSyncLogin:
@@ -221,7 +221,7 @@ class TestSyncLogin:
             json={"email": "user@example.com", "password": "secret"},
         )
         assert isinstance(result, AuthToken)
-        assert result.access_token == "104510|$2b$10$QzRetQodABPVePrtMx95P"
+        assert result.access_token == "token123abc"
         assert isinstance(result.me, User)
 
     def test_login_with_two_factor(self):
@@ -263,7 +263,7 @@ class TestSyncLogin:
         assert "remember" not in payload
 
 
-# ── Async register tests ─────────────────────────────────────────────
+# -- Async register tests ----------------------------------------------------
 
 
 class TestAsyncRegister:
@@ -289,7 +289,7 @@ class TestAsyncRegister:
             },
         )
         assert isinstance(result, AuthToken)
-        assert result.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+        assert result.access_token == "regtoken123abc"
         assert result.me is None
 
     @pytest.mark.anyio
@@ -347,7 +347,7 @@ class TestAsyncRegister:
         assert "email" in exc_info.value.status_message
 
 
-# ── Sync register tests ──────────────────────────────────────────────
+# -- Sync register tests -----------------------------------------------------
 
 
 class TestSyncRegister:
@@ -372,7 +372,7 @@ class TestSyncRegister:
             },
         )
         assert isinstance(result, AuthToken)
-        assert result.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+        assert result.access_token == "regtoken123abc"
 
     def test_register_with_all_params(self):
         mock_client = MagicMock()
@@ -411,7 +411,7 @@ class TestSyncRegister:
         assert "email" in exc_info.value.status_message
 
 
-# ── Async request_pin tests ──────────────────────────────────────────
+# -- Async request_pin tests -------------------------------------------------
 
 
 class TestAsyncRequestPin:
@@ -448,7 +448,7 @@ class TestAsyncRequestPin:
         assert "email" in exc_info.value.status_message
 
 
-# ── Sync request_pin tests ───────────────────────────────────────────
+# -- Sync request_pin tests --------------------------------------------------
 
 
 class TestSyncRequestPin:
@@ -483,7 +483,7 @@ class TestSyncRequestPin:
         assert "email" in exc_info.value.status_message
 
 
-# ── Async check tests ────────────────────────────────────────────────
+# -- Async check tests -------------------------------------------------------
 
 
 class TestAsyncCheck:
@@ -517,7 +517,7 @@ class TestAsyncCheck:
         assert exc_info.value.status_code == 401
 
 
-# ── Sync check tests ─────────────────────────────────────────────────
+# -- Sync check tests --------------------------------------------------------
 
 
 class TestSyncCheck:
@@ -549,7 +549,7 @@ class TestSyncCheck:
         assert exc_info.value.status_code == 401
 
 
-# ── Async logout tests ───────────────────────────────────────────────
+# -- Async logout tests ------------------------------------------------------
 
 
 class TestAsyncLogout:
@@ -570,7 +570,7 @@ class TestAsyncLogout:
         assert result is None
 
 
-# ── Sync logout tests ────────────────────────────────────────────────
+# -- Sync logout tests -------------------------------------------------------
 
 
 class TestSyncLogout:
@@ -590,7 +590,7 @@ class TestSyncLogout:
         assert result is None
 
 
-# ── Error handling tests ─────────────────────────────────────────────
+# -- Error handling tests ----------------------------------------------------
 
 
 class TestErrorHandling:
