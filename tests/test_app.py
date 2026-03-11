@@ -9,7 +9,7 @@ from qvapay.errors import QvaPayError
 from qvapay.models.app import App
 
 APP_DATA = {
-    "uuid": "175e5c5c-8488-4009-ba7d-815bb4015cc6",
+    "uuid": "abc123",
     "name": "UptimeRobot",
     "url": "https://uptimerobot.com/",
     "logo": "https://media.qvapay.com/apps/test.png",
@@ -31,12 +31,12 @@ DELETE_RESPONSE = {"result": "OK", "app": APP_DATA}
 CREATE_RESPONSE = {
     "result": "OK",
     "app": {
-        "uuid": "2c0110a4-623b-4312-b350-a535e98a58e1",
-        "secret": "80584f2cb0adb72353b4d683cf91b9a0809946672d2151f2c8",
+        "uuid": "def456",
+        "secret": "secret123abc",
         "name": "Test App",
         "url": "https://testapp.com",
         "desc": "La test App para conectar pagos con QvaPay",
-        "logo": "apps/a96a9e71-3d67-4a42-adc2-02a5d069fa23/1743391765433.jpeg",
+        "logo": "apps/logo123/image.jpeg",
     },
 }
 NOT_FOUND_RESPONSE = {"result": "App not found"}
@@ -55,13 +55,13 @@ def _mock_response(
     )
 
 
-# ── Model tests ──────────────────────────────────────────────────────
+# -- Model tests -------------------------------------------------------------
 
 
 class TestApp:
     def test_from_json(self):
         app = App.from_json(APP_DATA)
-        assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+        assert app.uuid == "abc123"
         assert app.name == "UptimeRobot"
         assert app.description == "Uptime Status for Robot"
         assert app.callback == "https://uptimerobot.com/dashboard.php"
@@ -75,7 +75,7 @@ class TestApp:
     def test_from_json_desc_alias(self):
         app = App.from_json(CREATE_RESPONSE["app"])
         assert app.description == "La test App para conectar pagos con QvaPay"
-        assert app.secret == "80584f2cb0adb72353b4d683cf91b9a0809946672d2151f2c8"
+        assert app.secret == "secret123abc"
 
     def test_from_json_optional_defaults(self):
         minimal = {
@@ -91,7 +91,7 @@ class TestApp:
         assert app.created_at is None
 
 
-# ── Async app module tests ───────────────────────────────────────────
+# -- Async app module tests --------------------------------------------------
 
 
 class TestAsyncAppModule:
@@ -106,7 +106,7 @@ class TestAsyncAppModule:
         http.get.assert_called_once_with("app")
         assert len(apps) == 1
         assert isinstance(apps[0], App)
-        assert apps[0].uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+        assert apps[0].uuid == "abc123"
 
     @pytest.mark.anyio
     async def test_get(self):
@@ -114,9 +114,9 @@ class TestAsyncAppModule:
         http.get.return_value = _mock_response(GET_RESPONSE)
         module = AsyncAppModule(http)
 
-        app = await module.get("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = await module.get("abc123")
 
-        http.get.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        http.get.assert_called_once_with("app/abc123")
         assert isinstance(app, App)
         assert app.name == "UptimeRobot"
 
@@ -138,11 +138,11 @@ class TestAsyncAppModule:
         http.delete.return_value = _mock_response(DELETE_RESPONSE)
         module = AsyncAppModule(http)
 
-        app = await module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = await module.delete("abc123")
 
-        http.delete.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        http.delete.assert_called_once_with("app/abc123")
         assert isinstance(app, App)
-        assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+        assert app.uuid == "abc123"
 
     @pytest.mark.anyio
     async def test_create(self):
@@ -166,7 +166,7 @@ class TestAsyncAppModule:
         )
         assert call_kwargs[1]["files"] is None
         assert isinstance(app, App)
-        assert app.uuid == "2c0110a4-623b-4312-b350-a535e98a58e1"
+        assert app.uuid == "def456"
         assert app.secret is not None
 
     @pytest.mark.anyio
@@ -188,7 +188,7 @@ class TestAsyncAppModule:
         assert call_kwargs["files"] == {"logo": logo_bytes}
 
 
-# ── Sync app module tests ────────────────────────────────────────────
+# -- Sync app module tests ---------------------------------------------------
 
 
 class TestSyncAppModule:
@@ -202,16 +202,16 @@ class TestSyncAppModule:
         http.get.assert_called_once_with("app")
         assert len(apps) == 1
         assert isinstance(apps[0], App)
-        assert apps[0].uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+        assert apps[0].uuid == "abc123"
 
     def test_get(self):
         http = MagicMock()
         http.get.return_value = _mock_response(GET_RESPONSE)
         module = SyncAppModule(http)
 
-        app = module.get("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = module.get("abc123")
 
-        http.get.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        http.get.assert_called_once_with("app/abc123")
         assert isinstance(app, App)
         assert app.name == "UptimeRobot"
 
@@ -231,11 +231,11 @@ class TestSyncAppModule:
         http.delete.return_value = _mock_response(DELETE_RESPONSE)
         module = SyncAppModule(http)
 
-        app = module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = module.delete("abc123")
 
-        http.delete.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        http.delete.assert_called_once_with("app/abc123")
         assert isinstance(app, App)
-        assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+        assert app.uuid == "abc123"
 
     def test_create(self):
         http = MagicMock()
@@ -255,5 +255,5 @@ class TestSyncAppModule:
         assert call_kwargs[1]["data"]["name"] == "Test App"
         assert call_kwargs[1]["files"] is None
         assert isinstance(app, App)
-        assert app.uuid == "2c0110a4-623b-4312-b350-a535e98a58e1"
+        assert app.uuid == "def456"
         assert app.secret is not None
