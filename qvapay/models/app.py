@@ -10,8 +10,8 @@ class App:
     name: str
     logo: str
     url: str
-    description: str
-    callback: str
+    description: str = ""
+    callback: str = ""
     success_url: str = ""
     cancel_url: str = ""
     enabled: bool = True
@@ -30,4 +30,6 @@ class App:
 
     @classmethod
     def from_json(cls, json: Any) -> "App":
-        return parse_json(cls, **json)
+        aliases = {"desc": "description"}
+        mapped = {aliases.get(k, k): v for k, v in json.items()}
+        return parse_json(cls, **mapped)

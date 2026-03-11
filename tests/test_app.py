@@ -28,6 +28,17 @@ APP_DATA = {
 LIST_RESPONSE = {"result": "OK", "apps": [APP_DATA]}
 GET_RESPONSE = {"result": "OK", "app": APP_DATA}
 DELETE_RESPONSE = {"result": "OK", "app": APP_DATA}
+CREATE_RESPONSE = {
+    "result": "OK",
+    "app": {
+        "uuid": "2c0110a4-623b-4312-b350-a535e98a58e1",
+        "secret": "80584f2cb0adb72353b4d683cf91b9a0809946672d2151f2c8",
+        "name": "Test App",
+        "url": "https://testapp.com",
+        "desc": "La test App para conectar pagos con QvaPay",
+        "logo": "apps/a96a9e71-3d67-4a42-adc2-02a5d069fa23/1743391765433.jpeg",
+    },
+}
 NOT_FOUND_RESPONSE = {"result": "App not found"}
 
 
@@ -60,6 +71,11 @@ class TestApp:
         assert app.card is False
         assert app.created_at == "2021-04-04T17:25:55.000Z"
         assert app.updated_at == "2021-04-04T17:25:55.000Z"
+
+    def test_from_json_desc_alias(self):
+        app = App.from_json(CREATE_RESPONSE["app"])
+        assert app.description == "La test App para conectar pagos con QvaPay"
+        assert app.secret == "80584f2cb0adb72353b4d683cf91b9a0809946672d2151f2c8"
 
     def test_from_json_optional_defaults(self):
         minimal = {
@@ -128,6 +144,49 @@ class TestAsyncAppModule:
         assert isinstance(app, App)
         assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
 
+    @pytest.mark.anyio
+    async def test_create(self):
+        http = AsyncMock()
+        http.post.return_value = _mock_response(CREATE_RESPONSE)
+        module = AsyncAppModule(http)
+
+        app = await module.create(
+            name="Test App",
+            url="https://testapp.com",
+            desc="La test App para conectar pagos con QvaPay",
+            callback="https://testapp.com/callback",
+        )
+
+        http.post.assert_called_once()
+        call_kwargs = http.post.call_args
+        assert call_kwargs[0][0] == "app/create"
+        assert call_kwargs[1]["data"]["name"] == "Test App"
+        assert call_kwargs[1]["data"]["desc"] == (
+            "La test App para conectar pagos con QvaPay"
+        )
+        assert call_kwargs[1]["files"] is None
+        assert isinstance(app, App)
+        assert app.uuid == "2c0110a4-623b-4312-b350-a535e98a58e1"
+        assert app.secret is not None
+
+    @pytest.mark.anyio
+    async def test_create_with_logo(self):
+        http = AsyncMock()
+        http.post.return_value = _mock_response(CREATE_RESPONSE)
+        module = AsyncAppModule(http)
+
+        logo_bytes = b"fake-image-data"
+        await module.create(
+            name="Test App",
+            url="https://testapp.com",
+            desc="Test",
+            callback="https://testapp.com/cb",
+            logo=logo_bytes,
+        )
+
+        call_kwargs = http.post.call_args[1]
+        assert call_kwargs["files"] == {"logo": logo_bytes}
+
 
 # ── Sync app module tests ────────────────────────────────────────────
 
@@ -177,3 +236,24 @@ class TestSyncAppModule:
         http.delete.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
         assert isinstance(app, App)
         assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
+
+    def test_create(self):
+        http = MagicMock()
+        http.post.return_value = _mock_response(CREATE_RESPONSE)
+        module = SyncAppModule(http)
+
+        app = module.create(
+            name="Test App",
+            url="https://testapp.com",
+            desc="La test App para conectar pagos con QvaPay",
+            callback="https://testapp.com/callback",
+        )
+
+        http.post.assert_called_once()
+        call_kwargs = http.post.call_args
+        assert call_kwargs[0][0] == "app/create"
+        assert call_kwargs[1]["data"]["name"] == "Test App"
+        assert call_kwargs[1]["files"] is None
+        assert isinstance(app, App)
+        assert app.uuid == "2c0110a4-623b-4312-b350-a535e98a58e1"
+        assert app.secret is not None

@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import BinaryIO, List, Optional, Union
 
 from httpx import AsyncClient
 
@@ -28,8 +28,28 @@ class AppModule:
         validate_response(response)
         return App.from_json(response.json()["app"])
 
-    async def create(self, **kwargs: Any) -> App:
+    async def create(
+        self,
+        name: str,
+        url: str,
+        desc: str,
+        callback: str,
+        logo: Optional[Union[BinaryIO, bytes]] = None,
+        success_url: str = "",
+        cancel_url: str = "",
+    ) -> App:
         """Create a new dev app."""
-        response = await self._http.post("app", json=kwargs)
+        data = {
+            "name": name,
+            "url": url,
+            "desc": desc,
+            "callback": callback,
+            "success_url": success_url,
+            "cancel_url": cancel_url,
+        }
+        files = None
+        if logo is not None:
+            files = {"logo": logo}
+        response = await self._http.post("app/create", data=data, files=files)
         validate_response(response)
-        return App.from_json(response.json())
+        return App.from_json(response.json()["app"])

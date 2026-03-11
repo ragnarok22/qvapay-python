@@ -16,4 +16,7 @@ tests: install ## Run linters and tests with coverage
 	uv run ruff check .
 	uv run ruff format --check .
 	uv run pre-commit run --all-files
-	uv run pytest --cov=./ --cov-report=xml --junitxml=junit.xml -o junit_family=legacy
+	uv run pytest
+
+coverage: install ## Run tests and show coverage report
+	uv run pytest --cov-report=term-missing
