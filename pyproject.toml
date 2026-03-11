@@ -27,9 +27,9 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "httpx>=0.20.0",
-    "python-dateutil>=2.8.2",
-    "python-dotenv>=0.19.1",
+    "httpx>=0.27.0",
+    "python-dateutil>=2.9.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.urls]
@@ -40,12 +40,12 @@ Tracker = "https://github.com/ragnarok22/qvapay-python/issues"
 
 [dependency-groups]
 dev = [
-    "pytest>=6.2.5",
-    "ruff>=0.11.2",
-    "pytest-cov>=3.0.0",
-    "anyio[trio]>=3.3.4",
-    "unasync-cli>=0.0.5",
-    "pre-commit>=2.15.0",
+    "pytest>=8.0.0",
+    "ruff>=0.14.0",
+    "pytest-cov>=6.0.0",
+    "anyio[trio]>=4.0.0",
+    "unasync-cli>=0.0.9",
+    "pre-commit>=4.0.0",
 ]
 
 [build-system]
@@ -54,11 +54,12 @@ build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
-ignore = ["E203"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["qvapay"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=qvapay --cov-report=xml --junitxml=junit.xml -o junit_family=legacy"

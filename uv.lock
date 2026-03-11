@@ -543,19 +543,19 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "httpx", specifier = ">=0.20.0" },
-    { name = "python-dateutil", specifier = ">=2.8.2" },
-    { name = "python-dotenv", specifier = ">=0.19.1" },
+    { name = "httpx", specifier = ">=0.27.0" },
+    { name = "python-dateutil", specifier = ">=2.9.0" },
+    { name = "python-dotenv", specifier = ">=1.0.0" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "anyio", extras = ["trio"], specifier = ">=3.3.4" },
-    { name = "pre-commit", specifier = ">=2.15.0" },
-    { name = "pytest", specifier = ">=6.2.5" },
-    { name = "pytest-cov", specifier = ">=3.0.0" },
-    { name = "ruff", specifier = ">=0.11.2" },
-    { name = "unasync-cli", specifier = ">=0.0.5" },
+    { name = "anyio", extras = ["trio"], specifier = ">=4.0.0" },
+    { name = "pre-commit", specifier = ">=4.0.0" },
+    { name = "pytest", specifier = ">=8.0.0" },
+    { name = "pytest-cov", specifier = ">=6.0.0" },
+    { name = "ruff", specifier = ">=0.14.0" },
+    { name = "unasync-cli", specifier = ">=0.0.9" },
 ]
 
 [[package]]
