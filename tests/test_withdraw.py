@@ -426,3 +426,22 @@ class TestSyncWithdrawList:
         assert results[0].amount == 30.0
         assert isinstance(results[0].transaction, WithdrawTransaction)
         assert isinstance(results[0].coin_detail, WithdrawCoin)
+
+
+class TestSyncWithdrawGet:
+    def test_get(self):
+        http = MagicMock()
+        http.get.return_value = _mock_response(
+            LIST_ITEM, method="GET", url="https://api.qvapay.com/withdraw/10790"
+        )
+        module = SyncWithdrawModule(http)
+
+        result = module.get(10790)
+
+        http.get.assert_called_once_with("withdraw/10790")
+        assert isinstance(result, Withdrawal)
+        assert result.id == 10790
+        assert result.amount == 30.0
+        assert result.payment_method == "BANK_MLC"
+        assert isinstance(result.transaction, WithdrawTransaction)
+        assert isinstance(result.coin_detail, WithdrawCoin)
