@@ -7,8 +7,8 @@ from qvapay._async.merchant import AsyncQvaPayMerchant
 from qvapay._sync.merchant import SyncQvaPayMerchant
 from qvapay.models.app import App
 
-APP_UUID = "9955dd29-082f-470b-882d-f4f0f25ea144"
-APP_SECRET = "Zx03ncGDTlBFvZ0JRAq61NUkB82pekNKs1PFkBYAAiadfbzg5l"
+APP_UUID = "12345678-9abc-defghijkl-mnopqrstuvwx"
+APP_SECRET = "123456789abcdefghijklmnopqrstuvwxyz011234567897509"
 
 INFO_RESPONSE = {
     "user_id": 1,
