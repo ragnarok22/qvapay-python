@@ -8,7 +8,10 @@ from .auth import (
 )
 from .errors import QvaPayError  # noqa: F401
 from .models.auth_token import AuthToken  # noqa: F401
-from .models.coin import Coin  # noqa: F401
+from .models.coin import (
+    Coin,  # noqa: F401
+    CoinCategory,  # noqa: F401
+)
 from .models.info import Info  # noqa: F401
 from .models.invoice import Invoice  # noqa: F401
 from .models.owner import Owner  # noqa: F401

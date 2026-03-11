@@ -7,6 +7,7 @@ from httpx._types import TimeoutTypes
 
 from ..auth import QvaPayUserAuth
 from ..http_clients import AsyncClient
+from ..models.coin import Coin
 from ..models.p2p_offer import P2POffer
 from ..models.paginated_transactions import PaginatedTransactions
 from ..models.payment_link import PaymentLink
@@ -180,6 +181,12 @@ class AsyncQvaPayUserClient:
         return Withdrawal.from_json(response.json())
 
     # P2P
+
+    async def get_p2p_coins_list(self) -> List[Coin]:
+        """Get P2P enabled currencies."""
+        response = await self.http_client.get("p2p/get_coins_list")
+        validate_response(response)
+        return [Coin.from_json(item) for item in response.json()]
 
     async def get_p2p_offers(self) -> List[P2POffer]:
         """Get P2P offers."""
