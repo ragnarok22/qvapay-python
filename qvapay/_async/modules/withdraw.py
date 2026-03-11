@@ -46,10 +46,10 @@ class WithdrawModule:
         return Withdrawal.from_json(response.json())
 
     async def list(self) -> List[Withdrawal]:
-        """Get withdrawal history."""
-        response = await self._http.get("withdraw")
+        """Get the last 10 withdrawals for the authenticated user."""
+        response = await self._http.get("withdraws")
         validate_response(response)
-        return [Withdrawal.from_json(w) for w in response.json()]
+        return [Withdrawal.from_json(w) for w in response.json()["data"]]
 
     async def get(self, uuid: str) -> Withdrawal:
         """Get withdrawal details."""
