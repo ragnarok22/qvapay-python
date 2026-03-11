@@ -483,6 +483,72 @@ class TestSyncRequestPin:
         assert "email" in exc_info.value.status_message
 
 
+# ── Async check tests ────────────────────────────────────────────────
+
+
+class TestAsyncCheck:
+    @pytest.mark.anyio
+    async def test_check_valid_token(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response({}, status_code=200)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client) as factory:
+            result = await async_auth.check("valid_token")
+
+        factory.assert_called_once()
+        headers = factory.call_args[1]["headers"]
+        assert headers["Authorization"] == "Bearer valid_token"
+        mock_client.post.assert_called_once_with("auth/check")
+        assert result is None
+
+    @pytest.mark.anyio
+    async def test_check_invalid_token_raises(self):
+        mock_client = AsyncMock()
+        mock_client.post.return_value = _mock_response({}, status_code=401)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                await async_auth.check("bad_token")
+
+        assert exc_info.value.status_code == 401
+
+
+# ── Sync check tests ─────────────────────────────────────────────────
+
+
+class TestSyncCheck:
+    def test_check_valid_token(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response({}, status_code=200)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client) as factory:
+            result = sync_auth.check("valid_token")
+
+        factory.assert_called_once()
+        headers = factory.call_args[1]["headers"]
+        assert headers["Authorization"] == "Bearer valid_token"
+        mock_client.post.assert_called_once_with("auth/check")
+        assert result is None
+
+    def test_check_invalid_token_raises(self):
+        mock_client = MagicMock()
+        mock_client.post.return_value = _mock_response({}, status_code=401)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client):
+            with pytest.raises(QvaPayError) as exc_info:
+                sync_auth.check("bad_token")
+
+        assert exc_info.value.status_code == 401
+
+
 # ── Async logout tests ───────────────────────────────────────────────
 
 
