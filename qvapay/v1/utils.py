@@ -9,14 +9,17 @@ T = TypeVar("T")
 
 
 def validate_response(response: Response) -> None:
-    if response.status_code != 200:
+    content_type = response.headers.get("content-type", "")
+    is_html = "text/html" in content_type
+    if response.status_code != 200 or is_html:
+        status = response.status_code if not is_html else 400
         message = None
         try:
             body = response.json()
             message = body.get("error") or body.get("message")
         except Exception:
             pass
-        raise QvaPayError(response.status_code, message)
+        raise QvaPayError(status, message)
 
 
 def parse_json(cls: Type[T], **json: Any) -> T:

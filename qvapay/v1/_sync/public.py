@@ -4,8 +4,7 @@ from httpx._config import DEFAULT_TIMEOUT_CONFIG
 from httpx._types import TimeoutTypes
 
 from ..http_clients import SyncClient
-from ..models.coin import Coin
-from ..models.rate import Rate
+from ..models.coin import CoinCategory
 from ..utils import validate_response
 
 BASE_URL = "https://qvapay.com/api"
@@ -19,40 +18,23 @@ def _client(timeout: TimeoutTypes) -> SyncClient:
     )
 
 
-def get_rates(
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-) -> List[Rate]:
-    """Get current exchange rates."""
-    with _client(timeout) as client:
-        response = client.get("rates/index")
-        validate_response(response)
-        return [Rate.from_json(item) for item in response.json()]
-
-
 def get_coins(
     timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-) -> List[Coin]:
-    """Get available coins."""
+) -> List[CoinCategory]:
+    """Get available coins grouped by category."""
     with _client(timeout) as client:
         response = client.get("coins")
         validate_response(response)
-        return [Coin.from_json(item) for item in response.json()]
-
-
-def get_p2p_coins_list(
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-) -> List[Coin]:
-    """Get P2P enabled currencies."""
-    with _client(timeout) as client:
-        response = client.get("p2p/get_coins_list")
-        validate_response(response)
-        return [Coin.from_json(item) for item in response.json()]
+        return [
+            CoinCategory.from_json(item)
+            for item in response.json()
+        ]
 
 
 def get_p2p_pairs_average(
     coin: str,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
-) -> dict:
+) -> float:
     """Get P2P completed pairs average for a given coin."""
     with _client(timeout) as client:
         response = client.get(
@@ -60,4 +42,4 @@ def get_p2p_pairs_average(
             params={"coin": coin.upper()},
         )
         validate_response(response)
-        return response.json()
+        return float(response.text)
