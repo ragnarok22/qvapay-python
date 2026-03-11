@@ -1,6 +1,6 @@
 [project]
 name = "qvapay"
-version = "0.3.0"
+version = "0.9.0"
 description = "Python SDK for the QvaPay API"
 readme = "README.md"
 license = "MIT"
