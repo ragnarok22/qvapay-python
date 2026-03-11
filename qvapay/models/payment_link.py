@@ -6,16 +6,16 @@ from ..utils import parse_json
 
 @dataclass
 class PaymentLink:
-    uuid: str
-    amount: float
-    description: str
-    url: Optional[str] = None
+    name: str
+    product_id: str
+    amount: str
+    payment_link_url: Optional[str] = None
     created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def __post_init__(self):
-        self.uuid = str(self.uuid)
-        self.amount = float(str(self.amount))
-        self.description = str(self.description)
+        self.name = str(self.name)
+        self.product_id = str(self.product_id)
 
     @classmethod
     def from_json(cls, json: Any) -> "PaymentLink":
