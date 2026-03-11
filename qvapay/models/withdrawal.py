@@ -6,19 +6,29 @@ from ..utils import parse_json
 
 @dataclass
 class Withdrawal:
-    uuid: str
     amount: float
-    status: str
-    pay_method: str
-    details: str
-    created_at: str
+    transaction_id: str
+    withdraw_id: Optional[str] = None
+    user_id: Optional[int] = None
+    receive: Optional[float] = None
+    receive_amount: Optional[float] = None
+    receive_amount_coin: Optional[float] = None
+    fee_to_apply: Optional[float] = None
+    payment_method: Optional[str] = None
+    coin: Optional[str] = None
+    details: Optional[str] = None
+    status: Optional[str] = None
+    created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    id: Optional[int] = None
 
     def __post_init__(self):
-        self.uuid = str(self.uuid)
         self.amount = float(str(self.amount))
-        self.status = str(self.status)
+        self.transaction_id = str(self.transaction_id)
 
     @classmethod
     def from_json(cls, json: Any) -> "Withdrawal":
-        return parse_json(cls, **json)
+        data = json
+        if "data" in json and isinstance(json["data"], dict):
+            data = json["data"]
+        return parse_json(cls, **data)

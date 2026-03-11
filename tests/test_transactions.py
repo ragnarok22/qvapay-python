@@ -585,3 +585,162 @@ class TestSyncTransactionsTransfer:
         assert tx.uuid == "7e48853f-949c-4271-9b4a-1213ee83ac11"
         assert tx.amount == 1.0
         assert tx.status == "paid"
+
+
+# -- Async transfer_app tests ------------------------------------------------
+
+
+class TestAsyncTransactionsTransferApp:
+    @pytest.mark.anyio
+    async def test_transfer_app(self):
+        http = AsyncMock()
+        http.post.return_value = _mock_response(
+            TRANSFER_RESPONSE,
+            status_code=201,
+            method="POST",
+            url="https://api.qvapay.com/transactions/transfer_app",
+        )
+        module = AsyncTransactionsModule(http)
+
+        tx = await module.transfer_app(
+            to="796a9e71-3d67-4a42-9dc2-02a5d069fa23",
+            amount=1,
+            description="TESTING",
+        )
+
+        http.post.assert_called_once_with(
+            "transactions/transfer_app",
+            json={
+                "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
+                "amount": 1,
+                "description": "TESTING",
+            },
+        )
+        assert isinstance(tx, Transaction)
+        assert tx.uuid == "7e48853f-949c-4271-9b4a-1213ee83ac11"
+        assert tx.amount == 1.0
+        assert tx.status == "paid"
+
+
+# -- Sync transfer_app tests -------------------------------------------------
+
+
+class TestSyncTransactionsTransferApp:
+    def test_transfer_app(self):
+        http = MagicMock()
+        http.post.return_value = _mock_response(
+            TRANSFER_RESPONSE,
+            status_code=201,
+            method="POST",
+            url="https://api.qvapay.com/transactions/transfer_app",
+        )
+        module = SyncTransactionsModule(http)
+
+        tx = module.transfer_app(
+            to="796a9e71-3d67-4a42-9dc2-02a5d069fa23",
+            amount=1,
+            description="TESTING",
+        )
+
+        http.post.assert_called_once_with(
+            "transactions/transfer_app",
+            json={
+                "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
+                "amount": 1,
+                "description": "TESTING",
+            },
+        )
+        assert isinstance(tx, Transaction)
+        assert tx.uuid == "7e48853f-949c-4271-9b4a-1213ee83ac11"
+        assert tx.amount == 1.0
+        assert tx.status == "paid"
+
+
+# -- Pay fixtures ------------------------------------------------------------
+
+PAY_RESPONSE = {
+    "uuid": "4cc0e747-e329-443d-99c0-5cff3394fb7b",
+    "app_id": 0,
+    "amount": "11.56",
+    "description": "QvaPay TShirt",
+    "remote_id": "QVAPAY_APP",
+    "status": "paid",
+    "created_at": "2021-10-17T17:04:47.000000Z",
+    "updated_at": "2021-10-17T17:06:01.000000Z",
+    "owner": {
+        "uuid": "9770d4f0-8166-41ae-914e-26d5dc287c32",
+        "username": "egc3",
+        "name": "Pedro Perez",
+        "lastname": "",
+        "bio": "",
+        "logo": "",
+        "kyc": 0,
+    },
+}
+
+
+# -- Async pay tests ---------------------------------------------------------
+
+
+class TestAsyncTransactionsPay:
+    @pytest.mark.anyio
+    async def test_pay(self):
+        http = AsyncMock()
+        http.post.return_value = _mock_response(
+            PAY_RESPONSE,
+            method="POST",
+            url="https://api.qvapay.com/transactions/pay",
+        )
+        module = AsyncTransactionsModule(http)
+
+        tx = await module.pay(
+            uuid="4cc0e747-e329-443d-99c0-5cff3394fb7b",
+            pin="0000",
+        )
+
+        http.post.assert_called_once_with(
+            "transactions/pay",
+            json={
+                "uuid": "4cc0e747-e329-443d-99c0-5cff3394fb7b",
+                "pin": "0000",
+            },
+        )
+        assert isinstance(tx, Transaction)
+        assert tx.uuid == "4cc0e747-e329-443d-99c0-5cff3394fb7b"
+        assert tx.amount == 11.56
+        assert tx.status == "paid"
+        assert tx.description == "QvaPay TShirt"
+        assert isinstance(tx.owner, TransactionUser)
+        assert tx.owner.name == "Pedro Perez"
+
+
+# -- Sync pay tests ----------------------------------------------------------
+
+
+class TestSyncTransactionsPay:
+    def test_pay(self):
+        http = MagicMock()
+        http.post.return_value = _mock_response(
+            PAY_RESPONSE,
+            method="POST",
+            url="https://api.qvapay.com/transactions/pay",
+        )
+        module = SyncTransactionsModule(http)
+
+        tx = module.pay(
+            uuid="4cc0e747-e329-443d-99c0-5cff3394fb7b",
+            pin="0000",
+        )
+
+        http.post.assert_called_once_with(
+            "transactions/pay",
+            json={
+                "uuid": "4cc0e747-e329-443d-99c0-5cff3394fb7b",
+                "pin": "0000",
+            },
+        )
+        assert isinstance(tx, Transaction)
+        assert tx.uuid == "4cc0e747-e329-443d-99c0-5cff3394fb7b"
+        assert tx.amount == 11.56
+        assert tx.status == "paid"
+        assert isinstance(tx.owner, TransactionUser)

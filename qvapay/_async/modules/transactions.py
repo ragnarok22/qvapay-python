@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from httpx import AsyncClient
 
@@ -163,9 +163,14 @@ class TransactionsModule:
         validate_response(response)
         return Transaction.from_json(response.json())
 
-    async def pay(self, uuid: str, pin: str) -> Any:
-        """Pay a transaction."""
+    async def pay(self, uuid: str, pin: str) -> Transaction:
+        """Pay a pending transaction.
+
+        Args:
+            uuid: UUID of the transaction to pay.
+            pin: User's PIN (default is "0000").
+        """
         payload = {"uuid": uuid, "pin": pin}
         response = await self._http.post("transactions/pay", json=payload)
         validate_response(response)
-        return response.json()
+        return Transaction.from_json(response.json())
