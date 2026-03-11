@@ -23,8 +23,11 @@ jobs:
     - name: Upload coverage
       if: matrix.python-version == '3.12'
       uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Upload test results to Codecov
       if: matrix.python-version == '3.12' && !cancelled()
       uses: codecov/codecov-action@v5
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         report_type: test_results
