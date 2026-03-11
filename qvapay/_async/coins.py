@@ -55,11 +55,16 @@ async def get(
         return Coin.from_json(response.json())
 
 
-async def history(
+async def price_history(
+    tick: str,
+    *,
+    timeframe: str = "24H",
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> list:
-    """Get coins price history."""
+    """Get price history for a coin by ticker."""
     async with _client(timeout) as client:
-        response = await client.get("coins/history")
+        response = await client.get(
+            f"coins/price-history/{tick}", params={"timeframe": timeframe}
+        )
         validate_response(response)
         return response.json()

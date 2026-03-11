@@ -98,6 +98,30 @@ COIN_V2_NO_NETWORK = {
     "network": None,
 }
 
+COIN_DETAIL_DATA = {
+    "id": 1,
+    "coins_categories_id": 1,
+    "name": "BitCoin",
+    "logo": "btc",
+    "tick": "BTC",
+    "fee_in": "0.00",
+    "fee_out": "7.50",
+    "min_in": "30.00",
+    "min_out": "20.00",
+    "max_in": 1000,
+    "max_out": 1000,
+    "working_data": '[{"name": "Wallet", "type": "text"}]',
+    "enabled_in": 1,
+    "enabled_out": 1,
+    "enabled_p2p": 1,
+    "price": "21698.968770779000000000",
+    "coin_category": {
+        "id": 1,
+        "name": "Criptomonedas",
+        "logo": "crypto",
+    },
+}
+
 CATEGORY_CRYPTO = {
     "id": 1,
     "name": "Criptomonedas",
@@ -173,6 +197,21 @@ class TestCoin:
         assert coin.id == "1"
         assert coin.network is None
 
+    def test_from_json_detail_with_category(self):
+        coin = Coin.from_json(COIN_DETAIL_DATA)
+        assert coin.id == "1"
+        assert coin.name == "BitCoin"
+        assert coin.max_in == 1000.0
+        assert coin.max_out == 1000.0
+        assert isinstance(coin.max_in, float)
+        assert isinstance(coin.max_out, float)
+        assert coin.coin_category is not None
+        assert isinstance(coin.coin_category, CoinCategory)
+        assert coin.coin_category.id == 1
+        assert coin.coin_category.name == "Criptomonedas"
+        assert coin.coin_category.logo == "crypto"
+        assert coin.coin_category.coins == []
+
     def test_from_json_minimal(self):
         minimal = {
             "id": 99,
@@ -191,7 +230,10 @@ class TestCoin:
         coin = Coin.from_json(minimal)
         assert coin.id == "99"
         assert coin.coins_categories_id is None
+        assert coin.max_in is None
+        assert coin.max_out is None
         assert coin.network is None
+        assert coin.coin_category is None
         assert coin.working_data is None
         assert coin.created_at is None
         assert coin.updated_at is None
@@ -332,7 +374,7 @@ class TestAsyncGet:
     @pytest.mark.anyio
     async def test_get(self):
         mock_client = AsyncMock()
-        mock_client.get.return_value = _mock_response(COIN_DATA)
+        mock_client.get.return_value = _mock_response(COIN_DETAIL_DATA)
         mock_client.__aenter__.return_value = mock_client
         mock_client.__aexit__.return_value = False
 
@@ -342,11 +384,15 @@ class TestAsyncGet:
         mock_client.get.assert_called_once_with("coins/1")
         assert isinstance(coin, Coin)
         assert coin.tick == "BTC"
+        assert coin.max_in == 1000.0
+        assert coin.max_out == 1000.0
+        assert isinstance(coin.coin_category, CoinCategory)
+        assert coin.coin_category.name == "Criptomonedas"
 
 
-class TestAsyncHistory:
+class TestAsyncPriceHistory:
     @pytest.mark.anyio
-    async def test_history(self):
+    async def test_price_history(self):
         history_data = [{"date": "2022-07-08", "price": "21698.97"}]
         mock_client = AsyncMock()
         mock_client.get.return_value = _mock_response(history_data)
@@ -354,10 +400,26 @@ class TestAsyncHistory:
         mock_client.__aexit__.return_value = False
 
         with patch("qvapay._async.coins._client", return_value=mock_client):
-            result = await async_coins.history()
+            result = await async_coins.price_history("BTC")
 
-        mock_client.get.assert_called_once_with("coins/history")
+        mock_client.get.assert_called_once_with(
+            "coins/price-history/BTC", params={"timeframe": "24H"}
+        )
         assert result == history_data
+
+    @pytest.mark.anyio
+    async def test_price_history_custom_timeframe(self):
+        mock_client = AsyncMock()
+        mock_client.get.return_value = _mock_response([])
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.coins._client", return_value=mock_client):
+            await async_coins.price_history("ETH", timeframe="7D")
+
+        mock_client.get.assert_called_once_with(
+            "coins/price-history/ETH", params={"timeframe": "7D"}
+        )
 
 
 # -- Sync module tests -------------------------------------------------------
@@ -448,7 +510,7 @@ class TestSyncListV2:
 class TestSyncGet:
     def test_get(self):
         mock_client = MagicMock()
-        mock_client.get.return_value = _mock_response(COIN_DATA)
+        mock_client.get.return_value = _mock_response(COIN_DETAIL_DATA)
         mock_client.__enter__.return_value = mock_client
         mock_client.__exit__.return_value = False
 
@@ -458,10 +520,14 @@ class TestSyncGet:
         mock_client.get.assert_called_once_with("coins/1")
         assert isinstance(coin, Coin)
         assert coin.tick == "BTC"
+        assert coin.max_in == 1000.0
+        assert coin.max_out == 1000.0
+        assert isinstance(coin.coin_category, CoinCategory)
+        assert coin.coin_category.name == "Criptomonedas"
 
 
-class TestSyncHistory:
-    def test_history(self):
+class TestSyncPriceHistory:
+    def test_price_history(self):
         history_data = [{"date": "2022-07-08", "price": "21698.97"}]
         mock_client = MagicMock()
         mock_client.get.return_value = _mock_response(history_data)
@@ -469,7 +535,22 @@ class TestSyncHistory:
         mock_client.__exit__.return_value = False
 
         with patch("qvapay._sync.coins._client", return_value=mock_client):
-            result = sync_coins.history()
+            result = sync_coins.price_history("BTC")
 
-        mock_client.get.assert_called_once_with("coins/history")
+        mock_client.get.assert_called_once_with(
+            "coins/price-history/BTC", params={"timeframe": "24H"}
+        )
         assert result == history_data
+
+    def test_price_history_custom_timeframe(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = _mock_response([])
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.coins._client", return_value=mock_client):
+            sync_coins.price_history("ETH", timeframe="7D")
+
+        mock_client.get.assert_called_once_with(
+            "coins/price-history/ETH", params={"timeframe": "7D"}
+        )
