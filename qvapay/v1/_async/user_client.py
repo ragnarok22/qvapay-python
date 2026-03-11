@@ -27,7 +27,7 @@ class AsyncQvaPayUserClient:
     timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
-        self.base_url = "https://qvapay.com/api"
+        self.base_url = "https://api.qvapay.com"
         self.http_client = AsyncClient(
             base_url=self.base_url,
             headers={"Authorization": f"Bearer {self.access_token}"},

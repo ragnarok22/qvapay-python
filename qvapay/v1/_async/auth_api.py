@@ -2,7 +2,7 @@ from ..http_clients import DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.auth_token import AuthToken
 from ..utils import validate_response
 
-BASE_URL = "https://qvapay.com/api"
+BASE_URL = "https://api.qvapay.com"
 
 
 def _client(timeout: TimeoutTypes, **kwargs) -> AsyncClient:
