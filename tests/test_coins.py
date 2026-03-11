@@ -64,6 +64,40 @@ COIN_DISABLED = {
     "updated_at": "2022-07-08T17:10:01.000000Z",
 }
 
+COIN_V2_DATA = {
+    "id": "78",
+    "name": "AXS (BSC)",
+    "tick": "AXS",
+    "min_in": "1",
+    "fee_in": "1",
+    "min_out": "30",
+    "fee_out": "2",
+    "enabled_in": True,
+    "enabled_out": True,
+    "enabled_p2p": True,
+    "coins_categories_id": "1",
+    "price": "2.213403886960948",
+    "logo": "axs",
+    "network": "BSC",
+}
+
+COIN_V2_NO_NETWORK = {
+    "id": "1",
+    "name": "Bitcoin",
+    "tick": "BTC",
+    "min_in": "20",
+    "fee_in": "1",
+    "min_out": "60",
+    "fee_out": "7.5",
+    "enabled_in": True,
+    "enabled_out": True,
+    "enabled_p2p": True,
+    "coins_categories_id": "1",
+    "price": "76329.15494707902",
+    "logo": "btc",
+    "network": None,
+}
+
 CATEGORY_CRYPTO = {
     "id": 1,
     "name": "Criptomonedas",
@@ -79,6 +113,7 @@ CATEGORY_EMPTY = {
 }
 
 LIST_RESPONSE = [CATEGORY_CRYPTO, CATEGORY_EMPTY]
+LIST_V2_RESPONSE = [COIN_V2_DATA, COIN_V2_NO_NETWORK]
 
 
 def _mock_response(
@@ -123,6 +158,21 @@ class TestCoin:
         assert coin.enabled_out is True
         assert coin.name == "Ethereum"
 
+    def test_from_json_v2_with_network(self):
+        coin = Coin.from_json(COIN_V2_DATA)
+        assert coin.id == "78"
+        assert coin.name == "AXS (BSC)"
+        assert coin.tick == "AXS"
+        assert coin.network == "BSC"
+        assert coin.enabled_in is True
+        assert coin.enabled_out is True
+        assert coin.enabled_p2p is True
+
+    def test_from_json_v2_null_network(self):
+        coin = Coin.from_json(COIN_V2_NO_NETWORK)
+        assert coin.id == "1"
+        assert coin.network is None
+
     def test_from_json_minimal(self):
         minimal = {
             "id": 99,
@@ -141,6 +191,7 @@ class TestCoin:
         coin = Coin.from_json(minimal)
         assert coin.id == "99"
         assert coin.coins_categories_id is None
+        assert coin.network is None
         assert coin.working_data is None
         assert coin.created_at is None
         assert coin.updated_at is None
@@ -206,18 +257,75 @@ class TestAsyncList:
         assert len(result[0].coins) == 2
         assert result[1].coins == []
 
+
+class TestAsyncListV2:
     @pytest.mark.anyio
-    async def test_list_v2(self):
+    async def test_list_v2_no_filters(self):
         mock_client = AsyncMock()
-        mock_client.get.return_value = _mock_response(LIST_RESPONSE)
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
         mock_client.__aenter__.return_value = mock_client
         mock_client.__aexit__.return_value = False
 
         with patch("qvapay._async.coins._client", return_value=mock_client):
             result = await async_coins.list_v2()
 
-        mock_client.get.assert_called_once_with("v2/coins")
+        mock_client.get.assert_called_once_with("coins/v2", params={})
         assert len(result) == 2
+        assert isinstance(result[0], Coin)
+        assert result[0].tick == "AXS"
+        assert result[0].network == "BSC"
+        assert result[1].tick == "BTC"
+        assert result[1].network is None
+
+    @pytest.mark.anyio
+    async def test_list_v2_with_enabled_in(self):
+        mock_client = AsyncMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.coins._client", return_value=mock_client):
+            await async_coins.list_v2(enabled_in=True)
+
+        mock_client.get.assert_called_once_with(
+            "coins/v2", params={"enabled_in": "true"}
+        )
+
+    @pytest.mark.anyio
+    async def test_list_v2_with_all_filters(self):
+        mock_client = AsyncMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.coins._client", return_value=mock_client):
+            await async_coins.list_v2(
+                enabled_in=True, enabled_out=False, enabled_p2p=True
+            )
+
+        mock_client.get.assert_called_once_with(
+            "coins/v2",
+            params={
+                "enabled_in": "true",
+                "enabled_out": "false",
+                "enabled_p2p": "true",
+            },
+        )
+
+    @pytest.mark.anyio
+    async def test_list_v2_omits_none_filters(self):
+        mock_client = AsyncMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.coins._client", return_value=mock_client):
+            await async_coins.list_v2(enabled_out=True)
+
+        params = mock_client.get.call_args[1]["params"]
+        assert params == {"enabled_out": "true"}
+        assert "enabled_in" not in params
+        assert "enabled_p2p" not in params
 
 
 class TestAsyncGet:
@@ -272,17 +380,69 @@ class TestSyncList:
         assert len(result[0].coins) == 2
         assert result[1].coins == []
 
-    def test_list_v2(self):
+
+class TestSyncListV2:
+    def test_list_v2_no_filters(self):
         mock_client = MagicMock()
-        mock_client.get.return_value = _mock_response(LIST_RESPONSE)
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
         mock_client.__enter__.return_value = mock_client
         mock_client.__exit__.return_value = False
 
         with patch("qvapay._sync.coins._client", return_value=mock_client):
             result = sync_coins.list_v2()
 
-        mock_client.get.assert_called_once_with("v2/coins")
+        mock_client.get.assert_called_once_with("coins/v2", params={})
         assert len(result) == 2
+        assert isinstance(result[0], Coin)
+        assert result[0].tick == "AXS"
+        assert result[0].network == "BSC"
+        assert result[1].tick == "BTC"
+        assert result[1].network is None
+
+    def test_list_v2_with_enabled_in(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.coins._client", return_value=mock_client):
+            sync_coins.list_v2(enabled_in=True)
+
+        mock_client.get.assert_called_once_with(
+            "coins/v2", params={"enabled_in": "true"}
+        )
+
+    def test_list_v2_with_all_filters(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.coins._client", return_value=mock_client):
+            sync_coins.list_v2(enabled_in=True, enabled_out=False, enabled_p2p=True)
+
+        mock_client.get.assert_called_once_with(
+            "coins/v2",
+            params={
+                "enabled_in": "true",
+                "enabled_out": "false",
+                "enabled_p2p": "true",
+            },
+        )
+
+    def test_list_v2_omits_none_filters(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = _mock_response(LIST_V2_RESPONSE)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.coins._client", return_value=mock_client):
+            sync_coins.list_v2(enabled_out=True)
+
+        params = mock_client.get.call_args[1]["params"]
+        assert params == {"enabled_out": "true"}
+        assert "enabled_in" not in params
+        assert "enabled_p2p" not in params
 
 
 class TestSyncGet:
