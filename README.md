@@ -1,6 +1,6 @@
 # Python SDK for the QvaPay API
 
-![Banner](https://raw.githubusercontent.com/rragnarok22/qvapay-python/main/banner.jpg)
+![Banner](https://raw.githubusercontent.com/ragnarok22/qvapay-python/main/banner.jpg)
 
 Non official, but friendly QvaPay library for the Python language.
 
