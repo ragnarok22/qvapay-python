@@ -110,15 +110,15 @@ class TestAsyncPaymentLinksModule:
         link = await module.create(
             name="Nuevo producto",
             product_id="NP-001",
-            amount="50.00",
+            amount=50.00,
         )
 
         http.post.assert_called_once_with(
-            "payment_links",
+            "payment_links/create",
             json={
                 "name": "Nuevo producto",
                 "product_id": "NP-001",
-                "amount": "50.00",
+                "amount": 50.00,
             },
         )
         assert isinstance(link, PaymentLink)
@@ -153,15 +153,15 @@ class TestSyncPaymentLinksModule:
         link = module.create(
             name="Nuevo producto",
             product_id="NP-001",
-            amount="50.00",
+            amount=50.00,
         )
 
         http.post.assert_called_once_with(
-            "payment_links",
+            "payment_links/create",
             json={
                 "name": "Nuevo producto",
                 "product_id": "NP-001",
-                "amount": "50.00",
+                "amount": 50.00,
             },
         )
         assert isinstance(link, PaymentLink)
