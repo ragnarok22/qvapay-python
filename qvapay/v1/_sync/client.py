@@ -25,7 +25,7 @@ class SyncQvaPayClient:
 
     app_id: str
     app_secret: str
-    timeout: TimeoutTypes = field(default=DEFAULT_TIMEOUT_CONFIG)
+    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT_CONFIG)
 
     def __post_init__(self):
         self.auth_params = {"app_id": self.app_id, "app_secret": self.app_secret}
