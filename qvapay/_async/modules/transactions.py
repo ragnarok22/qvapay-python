@@ -111,7 +111,7 @@ class TransactionsModule:
 
     async def get(self, uuid: str) -> TransactionDetail:
         """Get a transaction by UUID."""
-        response = await self._http.get(f"transactions/{uuid}")
+        response = await self._http.get(f"transaction/{uuid}")
         validate_response(response)
         return TransactionDetail.from_json(response.json())
 

@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from httpx import Client
 
@@ -12,6 +12,28 @@ from ...utils import validate_response
 class TransactionsModule:
     def __init__(self, http: Client):
         self._http = http
+
+    @staticmethod
+    def _build_params(
+        *,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        status: Optional[str] = None,
+        remote_id: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> Dict[str, str]:
+        params: Dict[str, str] = {}
+        if start is not None:
+            params["start"] = start
+        if end is not None:
+            params["end"] = end
+        if status is not None:
+            params["status"] = status
+        if remote_id is not None:
+            params["remote_id"] = remote_id
+        if description is not None:
+            params["description"] = description
+        return params
 
     def list(
         self,
@@ -34,37 +56,62 @@ class TransactionsModule:
             remote_id: Filter by remote_id.
             description: Filter by description text.
         """
-        params: dict[str, str] = {}
-        if start is not None:
-            params["start"] = start
-        if end is not None:
-            params["end"] = end
-        if status is not None:
-            params["status"] = status
-        if remote_id is not None:
-            params["remote_id"] = remote_id
-        if description is not None:
-            params["description"] = description
-
+        params = self._build_params(
+            start=start,
+            end=end,
+            status=status,
+            remote_id=remote_id,
+            description=description,
+        )
         response = self._http.get("transactions", params=params)
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
-    def sent_to_user(self) -> List[Transaction]:
+    def sent_to_user(
+        self,
+        *,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        status: Optional[str] = None,
+        remote_id: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> List[Transaction]:
         """Get transactions sent to user."""
-        response = self._http.get("transactions/sent")
+        params = self._build_params(
+            start=start,
+            end=end,
+            status=status,
+            remote_id=remote_id,
+            description=description,
+        )
+        response = self._http.get("transactions/sent", params=params)
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
-    def latest_sent(self) -> List[Transaction]:
+    def latest_sent(
+        self,
+        *,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        status: Optional[str] = None,
+        remote_id: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> List[Transaction]:
         """Get latest users sent transactions."""
-        response = self._http.get("transactions/latest_sent")
+        params = self._build_params(
+            start=start,
+            end=end,
+            status=status,
+            remote_id=remote_id,
+            description=description,
+        )
+        response = self._http.get("transactions/latest_sent", params=params)
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
     def get(self, uuid: str) -> TransactionDetail:
         """Get a transaction by UUID."""
-        response = self._http.get(f"transactions/{uuid}")
+        response = self._http.get(f"transaction/{uuid}")
         validate_response(response)
         return TransactionDetail.from_json(response.json())
 

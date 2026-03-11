@@ -14,6 +14,7 @@ from qvapay.models.transaction import (
     ServiceBuy,
     Transaction,
     TransactionApp,
+    TransactionDetail,
     TransactionUser,
     Wallet,
 )
@@ -130,6 +131,11 @@ TX_WITH_SERVICEBUY = {
     "owner": OWNER_DATA,
     "wallet": None,
     "servicebuy": SERVICEBUY_DATA,
+}
+
+TX_DETAIL = {
+    **TX_SIMPLE,
+    "paid_by_user_id": "user123abc",
 }
 
 LIST_RESPONSE = [TX_SIMPLE, TX_WITH_WALLET, TX_WITH_SERVICEBUY]
@@ -295,9 +301,7 @@ class TestAsyncTransactionsList:
 
         txs = await module.list(status="paid")
 
-        http.get.assert_called_once_with(
-            "transactions", params={"status": "paid"}
-        )
+        http.get.assert_called_once_with("transactions", params={"status": "paid"})
         assert len(txs) == 1
 
     @pytest.mark.anyio
@@ -326,7 +330,7 @@ class TestAsyncTransactionsList:
         http.get.return_value = _mock_response([TX_SIMPLE])
         module = AsyncTransactionsModule(http)
 
-        txs = await module.list(
+        await module.list(
             start="2021-10-17 13:05:30",
             end="2021-10-17 13:10:10",
             status="paid",
@@ -390,9 +394,7 @@ class TestSyncTransactionsList:
 
         txs = module.list(status="paid")
 
-        http.get.assert_called_once_with(
-            "transactions", params={"status": "paid"}
-        )
+        http.get.assert_called_once_with("transactions", params={"status": "paid"})
         assert len(txs) == 1
 
     def test_list_with_all_filters(self):
@@ -400,7 +402,7 @@ class TestSyncTransactionsList:
         http.get.return_value = _mock_response([TX_SIMPLE])
         module = SyncTransactionsModule(http)
 
-        txs = module.list(
+        module.list(
             start="2021-10-17 13:05:30",
             end="2021-10-17 13:10:10",
             status="paid",
@@ -426,3 +428,57 @@ class TestSyncTransactionsList:
         assert isinstance(txs[0].paid_by, TransactionUser)
         assert txs[1].wallet is not None
         assert txs[2].servicebuy is not None
+
+
+# -- TransactionDetail model tests ------------------------------------------
+
+
+class TestTransactionDetail:
+    def test_from_json(self):
+        td = TransactionDetail.from_json(TX_DETAIL)
+        assert isinstance(td, TransactionDetail)
+        assert td.uuid == "tx123abc"
+        assert td.paid_by_user_id == "user123abc"
+        assert td.amount == -1.0
+        assert isinstance(td.app, TransactionApp)
+        assert isinstance(td.paid_by, TransactionUser)
+
+    def test_from_json_without_paid_by_user_id(self):
+        td = TransactionDetail.from_json(TX_SIMPLE)
+        assert isinstance(td, TransactionDetail)
+        assert td.paid_by_user_id is None
+
+
+# -- Async get tests ---------------------------------------------------------
+
+
+class TestAsyncTransactionsGet:
+    @pytest.mark.anyio
+    async def test_get(self):
+        http = AsyncMock()
+        http.get.return_value = _mock_response(TX_DETAIL)
+        module = AsyncTransactionsModule(http)
+
+        tx = await module.get("tx123abc")
+
+        http.get.assert_called_once_with("transaction/tx123abc")
+        assert isinstance(tx, TransactionDetail)
+        assert tx.uuid == "tx123abc"
+        assert tx.paid_by_user_id == "user123abc"
+
+
+# -- Sync get tests ----------------------------------------------------------
+
+
+class TestSyncTransactionsGet:
+    def test_get(self):
+        http = MagicMock()
+        http.get.return_value = _mock_response(TX_DETAIL)
+        module = SyncTransactionsModule(http)
+
+        tx = module.get("tx123abc")
+
+        http.get.assert_called_once_with("transaction/tx123abc")
+        assert isinstance(tx, TransactionDetail)
+        assert tx.uuid == "tx123abc"
+        assert tx.paid_by_user_id == "user123abc"
