@@ -33,6 +33,7 @@ class SyncQvaPayClient:
         self.http_client = SyncClient(
             base_url=self.base_url,
             timeout=self.timeout,
+            follow_redirects=True,
         )
 
     def __enter__(self) -> "SyncQvaPayClient":

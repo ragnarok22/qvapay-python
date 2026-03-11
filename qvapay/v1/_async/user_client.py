@@ -34,6 +34,7 @@ class AsyncQvaPayUserClient:
             base_url=self.base_url,
             headers={"Authorization": f"Bearer {self.access_token}"},
             timeout=self.timeout,
+            follow_redirects=True,
         )
 
     async def __aenter__(self) -> "AsyncQvaPayUserClient":

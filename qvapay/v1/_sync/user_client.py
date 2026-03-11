@@ -34,6 +34,7 @@ class SyncQvaPayUserClient:
             base_url=self.base_url,
             headers={"Authorization": f"Bearer {self.access_token}"},
             timeout=self.timeout,
+            follow_redirects=True,
         )
 
     def __enter__(self) -> "SyncQvaPayUserClient":

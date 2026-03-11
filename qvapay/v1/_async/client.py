@@ -33,6 +33,7 @@ class AsyncQvaPayClient:
         self.http_client = AsyncClient(
             base_url=self.base_url,
             timeout=self.timeout,
+            follow_redirects=True,
         )
 
     async def __aenter__(self) -> "AsyncQvaPayClient":

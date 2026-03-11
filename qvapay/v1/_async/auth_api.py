@@ -17,7 +17,7 @@ async def login(
     Login with email and password.
     Returns an AuthToken with the access_token for authenticated requests.
     """
-    async with AsyncClient(base_url=BASE_URL, timeout=timeout) as client:
+    async with AsyncClient(base_url=BASE_URL, timeout=timeout, follow_redirects=True) as client:
         response = await client.post(
             "auth/login",
             json={"email": email, "password": password},
@@ -46,7 +46,7 @@ async def register(
     }
     if invite:
         payload["invite"] = invite
-    async with AsyncClient(base_url=BASE_URL, timeout=timeout) as client:
+    async with AsyncClient(base_url=BASE_URL, timeout=timeout, follow_redirects=True) as client:
         response = await client.post("auth/register", json=payload)
         validate_response(response)
         return AuthToken.from_json(response.json())
@@ -61,6 +61,7 @@ async def logout(
         base_url=BASE_URL,
         headers={"Authorization": f"Bearer {access_token}"},
         timeout=timeout,
+        follow_redirects=True,
     ) as client:
         response = await client.get("auth/logout")
         validate_response(response)

@@ -1,5 +1,6 @@
 from os import environ
 
+import pytest
 from httpx import Timeout
 from pytest import fixture
 
@@ -14,7 +15,7 @@ def create_user_client():
     email = environ.get("QVAPAY_EMAIL", "")
     password = environ.get("QVAPAY_PASSWORD", "")
     if not email or not password:
-        return None
+        pytest.skip("QVAPAY_EMAIL and QVAPAY_PASSWORD not set")
     token = login(email, password, timeout=Timeout(TIMEOUT))
     client = SyncQvaPayUserClient(token.access_token, timeout=Timeout(TIMEOUT))
     yield client
@@ -22,16 +23,12 @@ def create_user_client():
 
 
 def test_get_user(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     user = user_client.get_user()
     assert user.id
     assert user.username
 
 
 def test_get_transactions(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     result = user_client.get_transactions()
     if result.data:
         item = result.data[0]
@@ -39,24 +36,16 @@ def test_get_transactions(user_client: SyncQvaPayUserClient):
 
 
 def test_get_services(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     user_client.get_services()
 
 
 def test_get_payment_links(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     user_client.get_payment_links()
 
 
 def test_get_p2p_offers(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     user_client.get_p2p_offers()
 
 
 def test_get_withdrawals(user_client: SyncQvaPayUserClient):
-    if user_client is None:
-        return
     user_client.get_withdrawals()

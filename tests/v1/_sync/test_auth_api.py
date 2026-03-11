@@ -1,5 +1,6 @@
 from os import environ
 
+import pytest
 from httpx import Timeout
 
 from qvapay.v1 import QvaPayError
@@ -9,18 +10,15 @@ TIMEOUT = 20
 
 
 def test_login_invalid_credentials():
-    try:
+    with pytest.raises(QvaPayError):
         login("invalid@example.com", "wrongpassword", timeout=Timeout(TIMEOUT))
-        assert False
-    except QvaPayError:
-        assert True
 
 
 def test_login_and_logout():
     email = environ.get("QVAPAY_EMAIL", "")
     password = environ.get("QVAPAY_PASSWORD", "")
     if not email or not password:
-        return
+        pytest.skip("QVAPAY_EMAIL and QVAPAY_PASSWORD not set")
     token = login(email, password, timeout=Timeout(TIMEOUT))
     assert token.access_token
     assert token.token_type
