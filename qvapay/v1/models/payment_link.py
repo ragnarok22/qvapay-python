@@ -3,8 +3,6 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from dateutil.parser import parse
-
 from ..utils import parse_json
 
 
@@ -21,7 +19,7 @@ class PaymentLink:
         self.amount = float(str(self.amount))
         self.description = str(self.description)
         self.url = str(self.url)
-        self.created_at = parse(str(self.created_at))
+        self.created_at = datetime.fromisoformat(str(self.created_at))
 
     @classmethod
     def from_json(cls, json: Any) -> "PaymentLink":

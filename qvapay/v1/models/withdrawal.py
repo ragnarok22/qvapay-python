@@ -3,8 +3,6 @@ from datetime import datetime
 from typing import Any
 from uuid import UUID
 
-from dateutil.parser import parse
-
 from ..utils import parse_json
 
 
@@ -24,8 +22,8 @@ class Withdrawal:
         self.status = str(self.status)
         self.pay_method = str(self.pay_method)
         self.details = str(self.details)
-        self.created_at = parse(str(self.created_at))
-        self.updated_at = parse(str(self.updated_at))
+        self.created_at = datetime.fromisoformat(str(self.created_at))
+        self.updated_at = datetime.fromisoformat(str(self.updated_at))
 
     @classmethod
     def from_json(cls, json: Any) -> "Withdrawal":

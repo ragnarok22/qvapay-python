@@ -3,8 +3,6 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from dateutil.parser import parse
-
 from ..utils import parse_json
 
 
@@ -30,8 +28,8 @@ class User:
         self.bio = str(self.bio) if self.bio is not None else None
         self.logo = str(self.logo)
         self.kyc = bool(self.kyc)
-        self.created_at = parse(str(self.created_at))
-        self.updated_at = parse(str(self.updated_at))
+        self.created_at = datetime.fromisoformat(str(self.created_at))
+        self.updated_at = datetime.fromisoformat(str(self.updated_at))
 
     @classmethod
     def from_json(cls, json: Any) -> "User":

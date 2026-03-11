@@ -3,8 +3,6 @@ from datetime import datetime
 from typing import Any, Optional
 from uuid import UUID
 
-from dateutil.parser import parse
-
 from ..utils import parse_json
 
 
@@ -31,8 +29,8 @@ class Transaction:
         self.description = str(self.description)
         self.remote_id = str(self.remote_id)
         self.status = str(self.status)
-        self.created_at = parse(str(self.created_at))
-        self.updated_at = parse(str(self.updated_at))
+        self.created_at = datetime.fromisoformat(str(self.created_at))
+        self.updated_at = datetime.fromisoformat(str(self.updated_at))
         self.signed = int(str(self.signed)) if self.signed is not None else None
 
     @classmethod
