@@ -1,17 +1,15 @@
-[tool.poetry]
+[project]
 name = "qvapay"
 version = "0.3.0"
 description = "Python SDK for the QvaPay API"
-authors = [
-    "Carlos Lugones <contact@lugodev.com>",
-    "Ozkar L. Garcell <ozkar.garcell@gmail.com>",
-    "Leynier Gutiérrez González <leynier41@gmail.com>"
-]
-homepage = "https://github.com/lugodev/qvapay-python"
-repository = "https://github.com/lugodev/qvapay-python"
-documentation = "https://github.com/lugodev/qvapay-python"
 readme = "README.md"
 license = "MIT"
+requires-python = ">=3.8"
+authors = [
+    { name = "Carlos Lugones", email = "contact@lugodev.com" },
+    { name = "Ozkar L. Garcell", email = "ozkar.garcell@gmail.com" },
+    { name = "Leynier Gutiérrez González", email = "leynier41@gmail.com" },
+]
 keywords = ["QvaPay", "api", "payments"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -20,27 +18,31 @@ classifiers = [
     "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 3",
 ]
+dependencies = [
+    "httpx>=0.20.0",
+    "python-dateutil>=2.8.2",
+    "python-dotenv>=0.19.1",
+]
 
-[tool.poetry.urls]
-"Tracker" = "https://github.com/lugodev/qvapay-python/issues"
+[project.urls]
+Homepage = "https://github.com/lugodev/qvapay-python"
+Repository = "https://github.com/lugodev/qvapay-python"
+Documentation = "https://github.com/lugodev/qvapay-python"
+Tracker = "https://github.com/lugodev/qvapay-python/issues"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-httpx = "^0.20.0"
-python-dateutil = "^2.8.2"
-python-dotenv = "^0.19.1"
-
-[tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
-flake8 = "^4.0.1"
-black = "^21.9b0"
-isort = "^5.9.3"
-pytest-cov = "^3.0.0"
-commitizen = "^2.20.0"
-anyio = {extras = ["trio"], version = "^3.3.4"}
-unasync-cli = "^0.0.5"
-pre-commit = "^2.15.0"
+[dependency-groups]
+dev = [
+    "pytest>=6.2.5",
+    "flake8>=4.0.1",
+    "black>=21.9b0",
+    "isort>=5.9.3",
+    "pytest-cov>=3.0.0",
+    "commitizen>=2.20.0",
+    "anyio[trio]>=3.3.4",
+    "unasync-cli>=0.0.5",
+    "pre-commit>=2.15.0",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

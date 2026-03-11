@@ -7,22 +7,18 @@ jobs:
   Publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: Install uv
+      uses: astral-sh/setup-uv@v4
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Set up Poetry 2.1.0
-      uses: abatilo/actions-poetry@v2.1.0
-      with:
-        poetry-version: 1.1.2
+      run: uv python install 3.8
     - name: Run tests
       env:
           QVAPAY_APP_ID: ${{ secrets.QVAPAY_APP_ID }}
           QVAPAY_APP_SECRET: ${{ secrets.QVAPAY_APP_SECRET }}
       run: make tests
     - name: Run build
-      run: poetry build
+      run: uv build
     - name: Publish in GitHub Releases
       uses: svenstaro/upload-release-action@v2
       with:
@@ -32,7 +28,7 @@ jobs:
         overwrite: true
         file_glob: true
     - name: Publish in PyPI
-      uses: d1618033/gh-action-python-publish-using-poetry@master
-      with:
-        pypi_username: ${{ secrets.PYPI_USERNAME }}
-        pypi_password: ${{ secrets.PYPI_PASSWORD }}
+      run: uv publish
+      env:
+        UV_PUBLISH_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        UV_PUBLISH_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
