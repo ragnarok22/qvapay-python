@@ -1,6 +1,7 @@
 from random import random
 from uuid import uuid4
 
+import pytest
 from httpx import Timeout
 from pytest import fixture
 from pytest import mark as pytest_mark
@@ -20,11 +21,8 @@ def create_client():
 @pytest_mark.anyio
 def test_error():
     client = SyncQvaPayClient("", "")
-    try:
+    with pytest.raises(QvaPayError):
         client.get_info()
-        assert False
-    except QvaPayError:
-        assert True
 
 
 @pytest_mark.anyio
