@@ -51,6 +51,8 @@ REGISTER_ERROR_RESPONSE = {
     "errors": ["El valor del campo email ya está en uso."],
 }
 
+LOGOUT_RESPONSE = {"message": "You have been successfully logged out!"}
+
 LOGIN_ERROR_PASSWORD = {"error": "Password mismatch"}
 
 LOGIN_ERROR_VALIDATION = {
@@ -479,6 +481,47 @@ class TestSyncRequestPin:
 
         assert exc_info.value.status_code == 422
         assert "email" in exc_info.value.status_message
+
+
+# ── Async logout tests ───────────────────────────────────────────────
+
+
+class TestAsyncLogout:
+    @pytest.mark.anyio
+    async def test_logout(self):
+        mock_client = AsyncMock()
+        mock_client.get.return_value = _mock_response(LOGOUT_RESPONSE)
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch("qvapay._async.auth._client", return_value=mock_client) as factory:
+            result = await async_auth.logout("tok123")
+
+        factory.assert_called_once()
+        headers = factory.call_args[1]["headers"]
+        assert headers["Authorization"] == "Bearer tok123"
+        mock_client.get.assert_called_once_with("auth/logout")
+        assert result is None
+
+
+# ── Sync logout tests ────────────────────────────────────────────────
+
+
+class TestSyncLogout:
+    def test_logout(self):
+        mock_client = MagicMock()
+        mock_client.get.return_value = _mock_response(LOGOUT_RESPONSE)
+        mock_client.__enter__.return_value = mock_client
+        mock_client.__exit__.return_value = False
+
+        with patch("qvapay._sync.auth._client", return_value=mock_client) as factory:
+            result = sync_auth.logout("tok123")
+
+        factory.assert_called_once()
+        headers = factory.call_args[1]["headers"]
+        assert headers["Authorization"] == "Bearer tok123"
+        mock_client.get.assert_called_once_with("auth/logout")
+        assert result is None
 
 
 # ── Error handling tests ─────────────────────────────────────────────
