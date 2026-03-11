@@ -16,13 +16,13 @@ class PaymentLinksModule:
         validate_response(response)
         return [PaymentLink.from_json(item) for item in response.json()]
 
-    async def create(self, name: str, product_id: str, amount: str) -> PaymentLink:
+    async def create(self, name: str, product_id: str, amount: float) -> PaymentLink:
         """Create a payment link."""
         payload = {
             "name": name,
             "product_id": product_id,
             "amount": amount,
         }
-        response = await self._http.post("payment_links", json=payload)
+        response = await self._http.post("payment_links/create", json=payload)
         validate_response(response)
         return PaymentLink.from_json(response.json())
