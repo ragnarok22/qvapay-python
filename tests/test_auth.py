@@ -42,11 +42,34 @@ LOGIN_RESPONSE = {
 }
 
 
-def _mock_response(json_data: dict) -> httpx.Response:
+REGISTER_RESPONSE = {
+    "message": "¡Bienvenido a QvaPay Juan Perez!",
+    "accessToken": "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ",
+}
+
+REGISTER_ERROR_RESPONSE = {
+    "errors": ["El valor del campo email ya está en uso."],
+}
+
+LOGIN_ERROR_PASSWORD = {"error": "Password mismatch"}
+
+LOGIN_ERROR_VALIDATION = {
+    "error": [
+        "El campo email es obligatorio.",
+        "El campo password es obligatorio.",
+    ],
+}
+
+
+def _mock_response(
+    json_data: dict,
+    status_code: int = 200,
+    url: str = "https://api.qvapay.com/auth/login",
+) -> httpx.Response:
     return httpx.Response(
-        status_code=200,
+        status_code=status_code,
         json=json_data,
-        request=httpx.Request("POST", "https://api.qvapay.com/auth/login"),
+        request=httpx.Request("POST", url),
     )
 
 
@@ -106,6 +129,12 @@ class TestAuthToken:
         data = {"accessToken": "tok123", "token_type": "Bearer"}
         token = AuthToken.from_json(data)
         assert token.access_token == "tok123"
+        assert token.me is None
+
+    def test_from_json_register_response(self):
+        token = AuthToken.from_json(REGISTER_RESPONSE)
+        assert token.access_token == "17|pnKrh9BbjwgsnHrEumugIcJ3WK19hsD844dzxgbJ"
+        assert token.token_type == "Bearer"
         assert token.me is None
 
 

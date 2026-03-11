@@ -37,17 +37,20 @@ def register(
     name: str,
     email: str,
     password: str,
-    c_password: str,
+    lastname: Optional[str] = None,
     invite: str = "",
+    terms: bool = True,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> AuthToken:
     """Register a new user account. Returns an AuthToken."""
-    payload = {
+    payload: dict[str, Any] = {
         "name": name,
         "email": email,
         "password": password,
-        "c_password": c_password,
+        "terms": terms,
     }
+    if lastname is not None:
+        payload["lastname"] = lastname
     if invite:
         payload["invite"] = invite
     with _client(timeout) as client:
