@@ -51,9 +51,13 @@ class WithdrawModule:
         validate_response(response)
         return [Withdrawal.from_json(w) for w in response.json()["data"]]
 
-    async def get(self, uuid: str) -> Withdrawal:
-        """Get withdrawal details."""
-        response = await self._http.get(f"withdraw/{uuid}")
+    async def get(self, withdraw_id: int) -> Withdrawal:
+        """Get withdrawal details by ID.
+
+        Args:
+            withdraw_id: Numeric withdrawal ID.
+        """
+        response = await self._http.get(f"withdraw/{withdraw_id}")
         validate_response(response)
         return Withdrawal.from_json(response.json())
 

@@ -307,6 +307,28 @@ class TestAsyncWithdrawList:
         assert isinstance(results[0].coin_detail, WithdrawCoin)
 
 
+class TestAsyncWithdrawGet:
+    @pytest.mark.anyio
+    async def test_get(self):
+        http = AsyncMock()
+        http.get.return_value = _mock_response(
+            LIST_ITEM, method="GET", url="https://api.qvapay.com/withdraw/10790"
+        )
+        module = AsyncWithdrawModule(http)
+
+        result = await module.get(10790)
+
+        http.get.assert_called_once_with("withdraw/10790")
+        assert isinstance(result, Withdrawal)
+        assert result.id == 10790
+        assert result.amount == 30.0
+        assert result.payment_method == "BANK_MLC"
+        assert isinstance(result.transaction, WithdrawTransaction)
+        assert result.transaction.uuid == "30b8b187-c9bb-420b-8ca1-f92a3bf2bc29"
+        assert isinstance(result.coin_detail, WithdrawCoin)
+        assert result.coin_detail.tick == "BANK_MLC"
+
+
 # -- Sync module tests -----------------------------------------------------
 
 

@@ -120,3 +120,40 @@ class TestSyncMerchantInfo:
         assert app.description == "TestAPP"
         assert app.active is True
         assert app.enabled is True
+
+
+# -- Async balance tests -----------------------------------------------------
+
+
+class TestAsyncMerchantBalance:
+    @pytest.mark.anyio
+    async def test_balance(self):
+        merchant = AsyncQvaPayMerchant(uuid=APP_UUID, secret_key=APP_SECRET)
+        merchant._http = AsyncMock()
+        merchant._http.post.return_value = _mock_response(
+            "3688.30", url="https://api.qvapay.com/balance"
+        )
+
+        balance = await merchant.balance()
+
+        merchant._http.post.assert_called_once_with("balance", json=AUTH_PAYLOAD)
+        assert isinstance(balance, float)
+        assert balance == 3688.30
+
+
+# -- Sync balance tests ------------------------------------------------------
+
+
+class TestSyncMerchantBalance:
+    def test_balance(self):
+        merchant = SyncQvaPayMerchant(uuid=APP_UUID, secret_key=APP_SECRET)
+        merchant._http = MagicMock()
+        merchant._http.post.return_value = _mock_response(
+            "3688.30", url="https://api.qvapay.com/balance"
+        )
+
+        balance = merchant.balance()
+
+        merchant._http.post.assert_called_once_with("balance", json=AUTH_PAYLOAD)
+        assert isinstance(balance, float)
+        assert balance == 3688.30
