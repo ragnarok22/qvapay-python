@@ -22,3 +22,12 @@ class QvaPayAuth:
             raise QvaPayError(0, "QVAPAY_APP_ID is not set")
         elif not self.qvapay_app_secret:
             raise QvaPayError(0, "QVAPAY_APP_SECRET is not set")
+
+
+@dataclass
+class QvaPayUserAuth:
+    access_token: str
+
+    def __post_init__(self):
+        if not self.access_token:
+            raise QvaPayError(0, "access_token is not set")

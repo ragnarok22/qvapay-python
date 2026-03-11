@@ -10,6 +10,6 @@ from .models.paid_by import PaidBy  # noqa: F401
 from .models.transaction import Transaction  # noqa: F401
 from .models.transaction_detail import TransactionDetail  # noqa: F401
 
-__version__ = "0.3.0"
+__version__ = "0.9.0"
 __author__ = "Reinier Hernández <me@reinierhernandez.com>"
 __all__ = []
