@@ -1,12 +1,9 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 from uuid import UUID
 
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
-from httpx._types import TimeoutTypes
-
 from ..auth import QvaPayUserAuth
-from ..http_clients import AsyncClient
+from ..http_clients import DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.coin import Coin
 from ..models.p2p_offer import P2POffer
 from ..models.paginated_transactions import PaginatedTransactions
@@ -27,7 +24,7 @@ class AsyncQvaPayUserClient:
     """
 
     access_token: str
-    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT_CONFIG)
+    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
         self.base_url = "https://qvapay.com/api"
@@ -50,7 +47,7 @@ class AsyncQvaPayUserClient:
     @staticmethod
     def from_auth(
         auth: QvaPayUserAuth,
-        timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+        timeout: TimeoutTypes = DEFAULT_TIMEOUT,
     ) -> "AsyncQvaPayUserClient":
         return AsyncQvaPayUserClient(auth.access_token, timeout)
 
@@ -73,28 +70,26 @@ class AsyncQvaPayUserClient:
         password: Optional[str] = None,
     ) -> User:
         """Update the authenticated user's profile."""
-        payload = {}
-        if name is not None:
-            payload["name"] = name
-        if lastname is not None:
-            payload["lastname"] = lastname
-        if bio is not None:
-            payload["bio"] = bio
-        if logo is not None:
-            payload["logo"] = logo
-        if username is not None:
-            payload["username"] = username
-        if email is not None:
-            payload["email"] = email
-        if password is not None:
-            payload["password"] = password
+        payload = {
+            k: v
+            for k, v in {
+                "name": name,
+                "lastname": lastname,
+                "bio": bio,
+                "logo": logo,
+                "username": username,
+                "email": email,
+                "password": password,
+            }.items()
+            if v is not None
+        }
         response = await self.http_client.put("user", json=payload)
         validate_response(response)
         return User.from_json(response.json())
 
     # Financial operations
 
-    async def topup(self, pay_method: str, amount: float) -> dict:
+    async def topup(self, pay_method: str, amount: float) -> dict[str, Any]:
         """Request a deposit/top-up."""
         payload = {"pay_method": pay_method, "amount": amount}
         response = await self.http_client.post("topup", json=payload)
@@ -159,7 +154,7 @@ class AsyncQvaPayUserClient:
         validate_response(response)
         return Transfer.from_json(response.json())
 
-    async def pay(self, uuid: Union[str, UUID], pin: str) -> dict:
+    async def pay(self, uuid: Union[str, UUID], pin: str) -> dict[str, Any]:
         """Pay a pending transaction."""
         payload = {"uuid": str(uuid), "pin": pin}
         response = await self.http_client.post("transactions/pay", json=payload)

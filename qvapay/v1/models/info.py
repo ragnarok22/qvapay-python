@@ -37,16 +37,15 @@ class Info:
         self.success_url = str(self.success_url)
         self.cancel_url = str(self.cancel_url)
         self.logo = str(self.logo)
-        self.active = bool(str(self.active))
-        self.enabled = bool(str(self.enabled))
+        self.active = bool(self.active)
+        self.enabled = bool(self.enabled)
         self.card = int(str(self.card))
         self.created_at = datetime.fromisoformat(str(self.created_at))
         self.updated_at = datetime.fromisoformat(str(self.updated_at))
 
     @classmethod
     def from_json(cls, json: Any) -> "Info":
-        json["id"] = json["uuid"]
-        json["description"] = json["desc"]
-        del json["uuid"]
-        del json["desc"]
-        return parse_json(cls, **json)
+        data = {**json}
+        data["id"] = data.pop("uuid")
+        data["description"] = data.pop("desc")
+        return parse_json(cls, **data)

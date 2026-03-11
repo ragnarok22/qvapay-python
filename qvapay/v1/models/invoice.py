@@ -12,7 +12,7 @@ class Invoice:
     """
 
     app_id: UUID
-    transation_id: UUID  # alias: transation_uuid
+    transaction_id: UUID  # alias: transation_uuid
     amount: float
     description: str
     remote_id: str
@@ -22,7 +22,7 @@ class Invoice:
 
     def __post_init__(self):
         self.app_id = UUID(str(self.app_id))
-        self.transation_id = UUID(str(self.transation_id))
+        self.transaction_id = UUID(str(self.transaction_id))
         self.amount = float(str(self.amount))
         self.description = str(self.description)
         self.remote_id = str(self.remote_id)
@@ -32,8 +32,7 @@ class Invoice:
 
     @classmethod
     def from_json(cls, json: Any) -> "Invoice":
-        json["transation_id"] = json["transation_uuid"]
-        json["signed_url"] = json["signedUrl"]
-        del json["transation_uuid"]
-        del json["signedUrl"]
-        return parse_json(cls, **json)
+        data = {**json}
+        data["transaction_id"] = data.pop("transation_uuid")
+        data["signed_url"] = data.pop("signedUrl")
+        return parse_json(cls, **data)

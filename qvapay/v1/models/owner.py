@@ -21,11 +21,11 @@ class Owner:
         self.lastname = str(self.lastname)
         self.name = str(self.name)
         self.logo = str(self.logo)
-        self.kyc = bool(str(self.kyc))
+        self.kyc = bool(self.kyc)
         self.bio = str(self.bio) if self.bio is not None else None
 
     @classmethod
     def from_json(cls, json: Any) -> "Owner":
-        json["id"] = json["uuid"]
-        del json["uuid"]
-        return parse_json(cls, **json)
+        data = {**json}
+        data["id"] = data.pop("uuid")
+        return parse_json(cls, **data)

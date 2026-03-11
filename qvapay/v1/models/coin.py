@@ -65,6 +65,6 @@ class CoinCategory:
 
     @classmethod
     def from_json(cls, json: Any) -> "CoinCategory":
-        coins = [Coin.from_json(c) for c in json.get("Coins", [])]
-        del json["Coins"]
-        return parse_json(cls, **json, coins=coins)
+        data = {**json}
+        coins = [Coin.from_json(c) for c in data.pop("Coins", [])]
+        return parse_json(cls, **data, coins=coins)

@@ -35,7 +35,7 @@ class Transaction:
 
     @classmethod
     def from_json(cls, json: Any) -> "Transaction":
-        json["id"] = json["uuid"]
-        del json["uuid"]
-        signed = json["signed"] if "signed" in json else None
-        return parse_json(cls, **json, signed=signed)
+        data = {**json}
+        data["id"] = data.pop("uuid")
+        signed = data.get("signed")
+        return parse_json(cls, **data, signed=signed)

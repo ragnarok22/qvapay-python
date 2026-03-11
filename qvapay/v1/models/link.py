@@ -13,7 +13,7 @@ class Link:
     def __post_init__(self):
         self.url = str(self.url) if self.url is not None else None
         self.label = str(self.label)
-        self.active = bool(str(self.active))
+        self.active = bool(self.active)
 
     @classmethod
     def from_json(cls, json: Any) -> "Link":

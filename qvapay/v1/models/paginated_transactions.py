@@ -45,16 +45,9 @@ class PaginatedTransactions:
 
     @classmethod
     def from_json(cls, json: Any) -> "PaginatedTransactions":
-        json["from_index"] = json["from"]
-        json["to_index"] = json["to"]
-        del json["from"]
-        del json["to"]
-        links: List[Link] = []
-        data: List[Transaction] = []
-        for item in json["links"]:
-            links.append(Link.from_json(item))
-        for item in json["data"]:
-            data.append(Transaction.from_json(item))
-        del json["links"]
-        del json["data"]
-        return parse_json(cls, **json, links=links, data=data)
+        data = {**json}
+        data["from_index"] = data.pop("from")
+        data["to_index"] = data.pop("to")
+        links = [Link.from_json(item) for item in data.pop("links")]
+        transactions = [Transaction.from_json(item) for item in data.pop("data")]
+        return parse_json(cls, **data, links=links, data=transactions)

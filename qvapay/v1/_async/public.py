@@ -1,9 +1,6 @@
 from typing import List
 
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
-from httpx._types import TimeoutTypes
-
-from ..http_clients import AsyncClient
+from ..http_clients import DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.coin import CoinCategory
 from ..utils import validate_response
 
@@ -19,7 +16,7 @@ def _client(timeout: TimeoutTypes) -> AsyncClient:
 
 
 async def get_coins(
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+    timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> List[CoinCategory]:
     """Get available coins grouped by category."""
     async with _client(timeout) as client:
@@ -30,7 +27,7 @@ async def get_coins(
 
 async def get_p2p_pairs_average(
     coin: str,
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+    timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> float:
     """Get P2P completed pairs average for a given coin."""
     async with _client(timeout) as client:

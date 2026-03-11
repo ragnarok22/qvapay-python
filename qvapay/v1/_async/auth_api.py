@@ -1,7 +1,4 @@
-from httpx._config import DEFAULT_TIMEOUT_CONFIG
-from httpx._types import TimeoutTypes
-
-from ..http_clients import AsyncClient
+from ..http_clients import DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.auth_token import AuthToken
 from ..utils import validate_response
 
@@ -20,7 +17,7 @@ def _client(timeout: TimeoutTypes, **kwargs) -> AsyncClient:
 async def login(
     email: str,
     password: str,
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+    timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> AuthToken:
     """
     Login with email and password.
@@ -41,7 +38,7 @@ async def register(
     password: str,
     c_password: str,
     invite: str = "",
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+    timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> AuthToken:
     """
     Register a new user account.
@@ -63,7 +60,7 @@ async def register(
 
 async def logout(
     access_token: str,
-    timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
+    timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> None:
     """Logout and invalidate the given access token."""
     headers = {"Authorization": f"Bearer {access_token}"}
