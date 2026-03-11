@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 from ..http import BASE_URL, DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.auth_token import AuthToken
 from ..utils import validate_response
@@ -15,14 +17,18 @@ def _client(timeout: TimeoutTypes, **kwargs) -> AsyncClient:
 async def login(
     email: str,
     password: str,
+    two_factor_code: Optional[str] = None,
+    remember: bool = False,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> AuthToken:
     """Login with email and password. Returns an AuthToken."""
+    payload: dict[str, Any] = {"email": email, "password": password}
+    if two_factor_code is not None:
+        payload["two_factor_code"] = two_factor_code
+    if remember:
+        payload["remember"] = True
     async with _client(timeout) as client:
-        response = await client.post(
-            "auth/login",
-            json={"email": email, "password": password},
-        )
+        response = await client.post("auth/login", json=payload)
         validate_response(response)
         return AuthToken.from_json(response.json())
 
