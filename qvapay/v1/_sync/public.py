@@ -25,10 +25,7 @@ def get_coins(
     with _client(timeout) as client:
         response = client.get("coins")
         validate_response(response)
-        return [
-            CoinCategory.from_json(item)
-            for item in response.json()
-        ]
+        return [CoinCategory.from_json(item) for item in response.json()]
 
 
 def get_p2p_pairs_average(
