@@ -787,7 +787,7 @@ wheels = [
 
 [[package]]
 name = "qvapay"
-version = "0.3.0"
+version = "0.9.0"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
