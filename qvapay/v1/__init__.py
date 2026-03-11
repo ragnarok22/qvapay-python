@@ -1,32 +1,53 @@
-from ._async.client import AsyncQvaPayClient  # noqa: F401
-from ._async.user_client import AsyncQvaPayUserClient  # noqa: F401
-from ._sync.client import SyncQvaPayClient  # noqa: F401
-from ._sync.user_client import SyncQvaPayUserClient  # noqa: F401
-from .auth import (
-    QvaPayAuth,  # noqa: F401
-    QvaPayUserAuth,  # noqa: F401
-)
-from .errors import QvaPayError  # noqa: F401
-from .models.auth_token import AuthToken  # noqa: F401
-from .models.coin import (
-    Coin,  # noqa: F401
-    CoinCategory,  # noqa: F401
-)
-from .models.info import Info  # noqa: F401
-from .models.invoice import Invoice  # noqa: F401
-from .models.owner import Owner  # noqa: F401
-from .models.p2p_offer import P2POffer  # noqa: F401
-from .models.paginated_transactions import PaginatedTransactions  # noqa: F401
-from .models.paid_by import PaidBy  # noqa: F401
-from .models.payment_link import PaymentLink  # noqa: F401
-from .models.rate import Rate  # noqa: F401
-from .models.service import Service  # noqa: F401
-from .models.transaction import Transaction  # noqa: F401
-from .models.transaction_detail import TransactionDetail  # noqa: F401
-from .models.transfer import Transfer  # noqa: F401
-from .models.user import User  # noqa: F401
-from .models.withdrawal import Withdrawal  # noqa: F401
+from importlib.metadata import version
 
-__version__ = "0.9.0"
+from ._async.client import AsyncQvaPayClient
+from ._async.user_client import AsyncQvaPayUserClient
+from ._sync.client import SyncQvaPayClient
+from ._sync.user_client import SyncQvaPayUserClient
+from .auth import QvaPayAuth, QvaPayUserAuth
+from .errors import QvaPayError
+from .models.auth_token import AuthToken
+from .models.coin import Coin, CoinCategory
+from .models.info import Info
+from .models.invoice import Invoice
+from .models.owner import Owner
+from .models.p2p_offer import P2POffer
+from .models.paginated_transactions import PaginatedTransactions
+from .models.paid_by import PaidBy
+from .models.payment_link import PaymentLink
+from .models.rate import Rate
+from .models.service import Service
+from .models.transaction import Transaction
+from .models.transaction_detail import TransactionDetail
+from .models.transfer import Transfer
+from .models.user import User
+from .models.withdrawal import Withdrawal
+
+__version__ = version("qvapay")
 __author__ = "Reinier Hernández <me@reinierhernandez.com>"
-__all__ = []
+__all__ = [
+    "AsyncQvaPayClient",
+    "AsyncQvaPayUserClient",
+    "SyncQvaPayClient",
+    "SyncQvaPayUserClient",
+    "QvaPayAuth",
+    "QvaPayUserAuth",
+    "QvaPayError",
+    "AuthToken",
+    "Coin",
+    "CoinCategory",
+    "Info",
+    "Invoice",
+    "Owner",
+    "P2POffer",
+    "PaginatedTransactions",
+    "PaidBy",
+    "PaymentLink",
+    "Rate",
+    "Service",
+    "Transaction",
+    "TransactionDetail",
+    "Transfer",
+    "User",
+    "Withdrawal",
+]
