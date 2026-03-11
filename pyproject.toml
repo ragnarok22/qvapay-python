@@ -33,10 +33,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/lugodev/qvapay-python"
-Repository = "https://github.com/lugodev/qvapay-python"
-Documentation = "https://github.com/lugodev/qvapay-python"
-Tracker = "https://github.com/lugodev/qvapay-python/issues"
+Homepage = "https://github.com/ragnarok22/qvapay-python"
+Repository = "https://github.com/ragnarok22/qvapay-python"
+Documentation = "https://github.com/ragnarok22/qvapay-python"
+Tracker = "https://github.com/ragnarok22/qvapay-python/issues"
 
 [dependency-groups]
 dev = [
