@@ -6,6 +6,10 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
+    { name = "Reinier Hernández", email = "me@reinierhernandez.com" },
+]
+maintainers = [
+    { name = "Reinier Hernández", email = "me@reinierhernandez.com" },
     { name = "Carlos Lugones", email = "contact@lugodev.com" },
     { name = "Ozkar L. Garcell", email = "ozkar.garcell@gmail.com" },
     { name = "Leynier Gutiérrez González", email = "leynier41@gmail.com" },

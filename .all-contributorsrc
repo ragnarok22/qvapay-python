@@ -1,6 +1,6 @@
 {
   "projectName": "qvapay-python",
-  "projectOwner": "lugodev",
+  "projectOwner": "ragnarok22",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -10,6 +10,16 @@
   "commit": true,
   "commitConvention": "gitmoji",
   "contributors": [
+    {
+      "login": "ragnarok22",
+      "name": "Reinier Hernández",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8838803?v=4",
+      "profile": "https://blog.ragnarok22.dev",
+      "contributions": [
+        "code",
+        "maintenance"
+      ]
+    },
     {
       "login": "lugodev",
       "name": "Carlos Lugones",
@@ -44,15 +54,6 @@
       "profile": "https://github.com/jorgeajimenezl",
       "contributions": [
         "code"
-      ]
-    },
-    {
-      "login": "ragnarok22",
-      "name": "Reinier Hernández",
-      "avatar_url": "https://avatars.githubusercontent.com/u/8838803?v=4",
-      "profile": "https://blog.ragnarok22.dev",
-      "contributions": [
-        "bug"
       ]
     }
   ],
