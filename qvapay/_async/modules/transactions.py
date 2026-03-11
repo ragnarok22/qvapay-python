@@ -121,8 +121,18 @@ class TransactionsModule:
         validate_response(response)
         return response.content
 
-    async def transfer(self, to: str, amount: float, description: str = "") -> Any:
-        """Transfer balance to another user."""
+    async def transfer(
+        self, to: str, amount: float, description: str = ""
+    ) -> Transaction:
+        """Transfer balance to another user.
+
+        The ``to`` field accepts a user UUID, email, or phone number.
+
+        Args:
+            to: Destination user UUID, email, or phone.
+            amount: Amount to transfer.
+            description: Optional transfer description.
+        """
         payload = {
             "to": to,
             "amount": amount,
@@ -130,13 +140,28 @@ class TransactionsModule:
         }
         response = await self._http.post("transactions/transfer", json=payload)
         validate_response(response)
-        return response.json()
+        return Transaction.from_json(response.json())
 
-    async def transfer_app(self, **kwargs: Any) -> Any:
-        """Transfer balance via app."""
-        response = await self._http.post("transactions/transfer_app", json=kwargs)
+    async def transfer_app(
+        self, to: str, amount: float, description: str = ""
+    ) -> Transaction:
+        """Transfer balance via app.
+
+        The ``to`` field accepts a user UUID, email, or phone number.
+
+        Args:
+            to: Destination user UUID, email, or phone.
+            amount: Amount to transfer.
+            description: Optional transfer description.
+        """
+        payload = {
+            "to": to,
+            "amount": amount,
+            "description": description,
+        }
+        response = await self._http.post("transactions/transfer_app", json=payload)
         validate_response(response)
-        return response.json()
+        return Transaction.from_json(response.json())
 
     async def pay(self, uuid: str, pin: str) -> Any:
         """Pay a transaction."""
