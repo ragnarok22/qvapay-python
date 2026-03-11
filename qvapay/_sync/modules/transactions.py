@@ -1,9 +1,8 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 from httpx import Client
 
 from ...models.transaction import (
-    PaginatedTransactions,
     Transaction,
     TransactionDetail,
 )
@@ -14,11 +13,42 @@ class TransactionsModule:
     def __init__(self, http: Client):
         self._http = http
 
-    def list(self) -> PaginatedTransactions:
-        """Get transactions list."""
-        response = self._http.get("transactions")
+    def list(
+        self,
+        *,
+        start: Optional[str] = None,
+        end: Optional[str] = None,
+        status: Optional[str] = None,
+        remote_id: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> List[Transaction]:
+        """Get transactions list.
+
+        Returns the last 30 transactions for the authenticated user.
+        Results can be filtered by the following parameters:
+
+        Args:
+            start: Filter by start datetime (e.g. "2021-10-17 13:05:30").
+            end: Filter by end datetime (e.g. "2021-10-17 13:10:10").
+            status: Filter by status ("paid", "pending", or "cancelled").
+            remote_id: Filter by remote_id.
+            description: Filter by description text.
+        """
+        params: dict[str, str] = {}
+        if start is not None:
+            params["start"] = start
+        if end is not None:
+            params["end"] = end
+        if status is not None:
+            params["status"] = status
+        if remote_id is not None:
+            params["remote_id"] = remote_id
+        if description is not None:
+            params["description"] = description
+
+        response = self._http.get("transactions", params=params)
         validate_response(response)
-        return PaginatedTransactions.from_json(response.json())
+        return [Transaction.from_json(t) for t in response.json()]
 
     def sent_to_user(self) -> List[Transaction]:
         """Get transactions sent to user."""
