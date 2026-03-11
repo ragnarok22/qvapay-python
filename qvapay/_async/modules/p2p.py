@@ -16,9 +16,7 @@ class ChatSubModule:
         validate_response(response)
         return [P2PMessage.from_json(m) for m in response.json()]
 
-    async def send(
-        self, offer_uuid: str, message: str
-    ) -> P2PMessage:
+    async def send(self, offer_uuid: str, message: str) -> P2PMessage:
         """Send a message in P2P chat."""
         response = await self._http.post(
             f"p2p/{offer_uuid}/chat",
@@ -35,9 +33,7 @@ class P2PModule:
 
     async def average(self, coin: str) -> Any:
         """Get P2P average for a coin."""
-        response = await self._http.get(
-            "p2p/average", params={"coin": coin}
-        )
+        response = await self._http.get("p2p/average", params={"coin": coin})
         validate_response(response)
         return response.json()
 
@@ -94,9 +90,7 @@ class P2PModule:
 
     async def edit_offer(self, uuid: str, **kwargs: Any) -> P2POffer:
         """Edit a P2P offer."""
-        response = await self._http.post(
-            f"p2p/{uuid}/edit", json=kwargs
-        )
+        response = await self._http.post(f"p2p/{uuid}/edit", json=kwargs)
         validate_response(response)
         return P2POffer.from_json(response.json())
 
@@ -114,9 +108,7 @@ class P2PModule:
 
     async def confirm_received(self, uuid: str) -> Any:
         """Confirm received for a P2P offer."""
-        response = await self._http.post(
-            f"p2p/{uuid}/confirm_received"
-        )
+        response = await self._http.post(f"p2p/{uuid}/confirm_received")
         validate_response(response)
         return response.json()
 
@@ -128,8 +120,6 @@ class P2PModule:
 
     async def rate(self, uuid: str, rating: int) -> Any:
         """Rate a P2P offer."""
-        response = await self._http.post(
-            f"p2p/{uuid}/rate", json={"rating": rating}
-        )
+        response = await self._http.post(f"p2p/{uuid}/rate", json={"rating": rating})
         validate_response(response)
         return response.json()

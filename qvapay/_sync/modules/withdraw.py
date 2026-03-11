@@ -10,9 +10,7 @@ class WithdrawModule:
     def __init__(self, http: Client):
         self._http = http
 
-    def create(
-        self, pay_method: str, amount: float, **kwargs: Any
-    ) -> Withdrawal:
+    def create(self, pay_method: str, amount: float, **kwargs: Any) -> Withdrawal:
         """Request a withdrawal."""
         payload = {"pay_method": pay_method, "amount": amount, **kwargs}
         response = self._http.post("withdraw", json=payload)

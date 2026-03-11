@@ -39,9 +39,7 @@ class PaginatedTransactions:
     @classmethod
     def from_json(cls, json: Any) -> "PaginatedTransactions":
         data = {**json}
-        transactions = [
-            Transaction.from_json(t) for t in data.pop("data", [])
-        ]
+        transactions = [Transaction.from_json(t) for t in data.pop("data", [])]
         return parse_json(cls, **data, data=transactions)
 
 

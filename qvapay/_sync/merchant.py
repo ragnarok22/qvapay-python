@@ -18,9 +18,7 @@ class SyncQvaPayMerchant:
 
     uuid: str
     secret_key: str
-    timeout: TimeoutTypes = field(
-        default_factory=lambda: DEFAULT_TIMEOUT
-    )
+    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
         self._auth = {
@@ -50,9 +48,7 @@ class SyncQvaPayMerchant:
 
     def balance(self) -> float:
         """Get app owner balance."""
-        response = self._http.post(
-            "balance", json=self._auth
-        )
+        response = self._http.post("balance", json=self._auth)
         validate_response(response)
         return float(response.json())
 
@@ -71,56 +67,40 @@ class SyncQvaPayMerchant:
             "remote_id": remote_id,
             "signed": int(signed),
         }
-        response = self._http.post(
-            "create_invoice", json=body
-        )
+        response = self._http.post("create_invoice", json=body)
         validate_response(response)
         return Invoice.from_json(response.json())
 
-    def modify_invoice(
-        self, uuid: str, **kwargs: Any
-    ) -> Invoice:
+    def modify_invoice(self, uuid: str, **kwargs: Any) -> Invoice:
         """Modify an existing invoice."""
         body = {**self._auth, "uuid": uuid, **kwargs}
-        response = self._http.post(
-            "modify_invoice", json=body
-        )
+        response = self._http.post("modify_invoice", json=body)
         validate_response(response)
         return Invoice.from_json(response.json())
 
     def get_transactions(self) -> PaginatedTransactions:
         """Get app transactions."""
-        response = self._http.post(
-            "transactions", json=self._auth
-        )
+        response = self._http.post("transactions", json=self._auth)
         validate_response(response)
         return PaginatedTransactions.from_json(response.json())
 
     def get_transaction_status(self, uuid: str) -> Any:
         """Get transaction status."""
         body = {**self._auth, "uuid": uuid}
-        response = self._http.post(
-            "transaction_status", json=body
-        )
+        response = self._http.post("transaction_status", json=body)
         validate_response(response)
         return response.json()
 
-    def get_payments_authorization(
-        self, **kwargs: Any
-    ) -> Any:
+    def get_payments_authorization(self, **kwargs: Any) -> Any:
         """Get payments authorization."""
         body = {**self._auth, **kwargs}
-        response = self._http.post(
-            "payments_authorization", json=body
-        )
+        response = self._http.post("payments_authorization", json=body)
         validate_response(response)
         return response.json()
 
     def charge_user(self, **kwargs: Any) -> Any:
         """Charge a user with an authorized token."""
         body = {**self._auth, **kwargs}
-        response = self._http.post(
-            "charge_user", json=body
-        )
+        response = self._http.post("charge_user", json=body)
         validate_response(response)
         return response.json()

@@ -18,16 +18,12 @@ class AsyncQvaPayClient:
     """
 
     access_token: str
-    timeout: TimeoutTypes = field(
-        default_factory=lambda: DEFAULT_TIMEOUT
-    )
+    timeout: TimeoutTypes = field(default_factory=lambda: DEFAULT_TIMEOUT)
 
     def __post_init__(self):
         self._http = AsyncClient(
             base_url=BASE_URL,
-            headers={
-                "Authorization": f"Bearer {self.access_token}"
-            },
+            headers={"Authorization": f"Bearer {self.access_token}"},
             timeout=self.timeout,
             follow_redirects=True,
         )

@@ -1,4 +1,4 @@
-from ..http import DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes, BASE_URL
+from ..http import BASE_URL, DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
 from ..models.auth_token import AuthToken
 from ..utils import validate_response
 

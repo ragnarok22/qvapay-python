@@ -1,8 +1,10 @@
 from typing import Union
 
-from httpx import AsyncClient  # noqa: F401
+from httpx import (
+    AsyncClient,  # noqa: F401
+    Timeout,
+)
 from httpx import Client as BaseClient
-from httpx import Timeout
 
 TimeoutTypes = Union[Timeout, float, None]
 DEFAULT_TIMEOUT = Timeout(5.0)

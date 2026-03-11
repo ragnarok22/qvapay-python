@@ -10,9 +10,7 @@ class WithdrawModule:
     def __init__(self, http: AsyncClient):
         self._http = http
 
-    async def create(
-        self, pay_method: str, amount: float, **kwargs: Any
-    ) -> Withdrawal:
+    async def create(self, pay_method: str, amount: float, **kwargs: Any) -> Withdrawal:
         """Request a withdrawal."""
         payload = {"pay_method": pay_method, "amount": amount, **kwargs}
         response = await self._http.post("withdraw", json=payload)

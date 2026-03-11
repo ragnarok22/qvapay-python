@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, List
 
 from httpx import Client
 
@@ -22,9 +22,7 @@ class PaymentMethodsSubModule:
 
     def create(self, **kwargs: Any) -> PaymentMethod:
         """Create a payment method."""
-        response = self._http.post(
-            "user/payment_methods", json=kwargs
-        )
+        response = self._http.post("user/payment_methods", json=kwargs)
         validate_response(response)
         return PaymentMethod.from_json(response.json())
 
@@ -37,20 +35,16 @@ class UserPaymentLinksSubModule:
         """List saved payment links."""
         response = self._http.get("user/payment_links")
         validate_response(response)
-        return [PaymentLink.from_json(l) for l in response.json()]
+        return [PaymentLink.from_json(item) for item in response.json()]
 
     def delete(self, uuid: str) -> None:
         """Delete a payment link."""
-        response = self._http.delete(
-            f"user/payment_links/{uuid}"
-        )
+        response = self._http.delete(f"user/payment_links/{uuid}")
         validate_response(response)
 
     def create(self, **kwargs: Any) -> PaymentLink:
         """Create a payment link."""
-        response = self._http.post(
-            "user/payment_links", json=kwargs
-        )
+        response = self._http.post("user/payment_links", json=kwargs)
         validate_response(response)
         return PaymentLink.from_json(response.json())
 
@@ -67,9 +61,7 @@ class ContactsSubModule:
 
     def save(self, **kwargs: Any) -> Contact:
         """Save a contact."""
-        response = self._http.post(
-            "user/contacts", json=kwargs
-        )
+        response = self._http.post("user/contacts", json=kwargs)
         validate_response(response)
         return Contact.from_json(response.json())
 
@@ -80,17 +72,13 @@ class DomainsSubModule:
 
     def check(self, domain: str) -> Domain:
         """Check domain availability."""
-        response = self._http.get(
-            "user/domains/check", params={"domain": domain}
-        )
+        response = self._http.get("user/domains/check", params={"domain": domain})
         validate_response(response)
         return Domain.from_json(response.json())
 
     def get_available(self, **kwargs: Any) -> Domain:
         """Get an available domain."""
-        response = self._http.post(
-            "user/domains/available", json=kwargs
-        )
+        response = self._http.post("user/domains/available", json=kwargs)
         validate_response(response)
         return Domain.from_json(response.json())
 
@@ -123,33 +111,25 @@ class UserModule:
 
     def update_email(self, email: str) -> User:
         """Update user email."""
-        response = self._http.put(
-            "user/me/email", json={"email": email}
-        )
+        response = self._http.put("user/me/email", json={"email": email})
         validate_response(response)
         return User.from_json(response.json())
 
     def update_username(self, username: str) -> User:
         """Update username."""
-        response = self._http.put(
-            "user/me/username", json={"username": username}
-        )
+        response = self._http.put("user/me/username", json={"username": username})
         validate_response(response)
         return User.from_json(response.json())
 
     def upload_avatar(self, file: Any) -> User:
         """Upload user avatar."""
-        response = self._http.post(
-            "user/me/avatar", files={"avatar": file}
-        )
+        response = self._http.post("user/me/avatar", files={"avatar": file})
         validate_response(response)
         return User.from_json(response.json())
 
     def upload_cover(self, file: Any) -> User:
         """Upload user cover image."""
-        response = self._http.post(
-            "user/me/cover", files={"cover": file}
-        )
+        response = self._http.post("user/me/cover", files={"cover": file})
         validate_response(response)
         return User.from_json(response.json())
 
@@ -174,9 +154,7 @@ class UserModule:
 
     def search(self, query: str) -> List[User]:
         """Search for users."""
-        response = self._http.post(
-            "user/search", json={"query": query}
-        )
+        response = self._http.post("user/search", json={"query": query})
         validate_response(response)
         return [User.from_json(u) for u in response.json()]
 

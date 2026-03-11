@@ -1,4 +1,4 @@
-from typing import Any, List, Optional
+from typing import Any, List
 
 from httpx import Client
 
@@ -44,34 +44,26 @@ class TransactionsModule:
         validate_response(response)
         return response.content
 
-    def transfer(
-        self, to: str, amount: float, description: str = ""
-    ) -> Any:
+    def transfer(self, to: str, amount: float, description: str = "") -> Any:
         """Transfer balance to another user."""
         payload = {
             "to": to,
             "amount": amount,
             "description": description,
         }
-        response = self._http.post(
-            "transactions/transfer", json=payload
-        )
+        response = self._http.post("transactions/transfer", json=payload)
         validate_response(response)
         return response.json()
 
     def transfer_app(self, **kwargs: Any) -> Any:
         """Transfer balance via app."""
-        response = self._http.post(
-            "transactions/transfer_app", json=kwargs
-        )
+        response = self._http.post("transactions/transfer_app", json=kwargs)
         validate_response(response)
         return response.json()
 
     def pay(self, uuid: str, pin: str) -> Any:
         """Pay a transaction."""
         payload = {"uuid": uuid, "pin": pin}
-        response = self._http.post(
-            "transactions/pay", json=payload
-        )
+        response = self._http.post("transactions/pay", json=payload)
         validate_response(response)
         return response.json()
