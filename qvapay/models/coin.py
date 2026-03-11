@@ -14,25 +14,21 @@ class Coin:
     enabled_in: bool
     enabled_out: bool
     enabled_p2p: bool
-    trade: bool
-    stable: bool
-    decimals: int
     fee_in: str
     fee_out: str
     min_in: str
     min_out: str
-    max_in: float
-    max_out: float
-    description: Optional[str] = None
+    coins_categories_id: Optional[int] = None
+    working_data: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def __post_init__(self):
         self.id = str(self.id)
         self.name = str(self.name)
         self.enabled_in = bool(self.enabled_in)
         self.enabled_out = bool(self.enabled_out)
-        self.decimals = int(str(self.decimals))
-        self.max_in = float(str(self.max_in))
-        self.max_out = float(str(self.max_out))
+        self.enabled_p2p = bool(self.enabled_p2p)
 
     @classmethod
     def from_json(cls, json: Any) -> "Coin":
@@ -50,11 +46,10 @@ class CoinCategory:
         self.id = int(str(self.id))
         self.name = str(self.name)
         self.logo = str(self.logo)
-        for coin in self.coins:
-            coin.__post_init__()
 
     @classmethod
     def from_json(cls, json: Any) -> "CoinCategory":
         data = {**json}
-        coins = [Coin.from_json(c) for c in data.pop("Coins", [])]
+        raw_coins = data.pop("coins", data.pop("Coins", []))
+        coins = [Coin.from_json(c) for c in raw_coins]
         return parse_json(cls, **data, coins=coins)
