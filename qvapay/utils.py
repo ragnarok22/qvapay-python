@@ -23,7 +23,7 @@ def validate_response(response: Response) -> None:
             elif isinstance(error, list):
                 message = "; ".join(str(e) for e in error)
             else:
-                message = error or body.get("message")
+                message = error or body.get("message") or body.get("result")
         except Exception:
             pass
         raise QvaPayError(status, message)

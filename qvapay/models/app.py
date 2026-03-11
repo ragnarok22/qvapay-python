@@ -10,13 +10,17 @@ class App:
     name: str
     logo: str
     url: str
-    desc: str
+    description: str
     callback: str
-    success_url: str
-    cancel_url: str
-    enabled: bool
-    active: bool
+    success_url: str = ""
+    cancel_url: str = ""
+    enabled: bool = True
+    active: bool = True
+    allowed_payment_auth: bool = False
+    card: bool = False
     secret: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
     def __post_init__(self):
         self.uuid = str(self.uuid)

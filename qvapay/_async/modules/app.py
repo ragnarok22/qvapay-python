@@ -14,18 +14,19 @@ class AppModule:
         """Get all apps."""
         response = await self._http.get("app")
         validate_response(response)
-        return [App.from_json(item) for item in response.json()]
+        return [App.from_json(item) for item in response.json()["apps"]]
 
     async def get(self, uuid: str) -> App:
         """Get an app by UUID."""
         response = await self._http.get(f"app/{uuid}")
         validate_response(response)
-        return App.from_json(response.json())
+        return App.from_json(response.json()["app"])
 
-    async def delete(self, uuid: str) -> None:
-        """Delete an app by UUID."""
+    async def delete(self, uuid: str) -> App:
+        """Delete an app by UUID. Returns the deleted app."""
         response = await self._http.delete(f"app/{uuid}")
         validate_response(response)
+        return App.from_json(response.json()["app"])
 
     async def create(self, **kwargs: Any) -> App:
         """Create a new dev app."""
