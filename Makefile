@@ -4,18 +4,16 @@ help: ## Show this help message
 install: ## Install dependencies
 	uv sync
 
-format: ## Format code with black and isort
-	uv run black .
-	uv run isort . --profile=black
+format: ## Format code with ruff
+	uv run ruff check --fix .
+	uv run ruff format .
 
-lint: ## Run linters (flake8, black --check, isort --check)
-	uv run flake8 . --count --show-source --statistics --max-line-length=88 --extend-ignore=E203 --exclude=.venv
-	uv run black . --check
-	uv run isort . --check --profile=black
+lint: ## Run linters (ruff check and format --check)
+	uv run ruff check .
+	uv run ruff format --check .
 
 tests: install ## Run linters and tests with coverage
-	uv run flake8 . --count --show-source --statistics --max-line-length=88 --extend-ignore=E203 --exclude=.venv
-	uv run black . --check
-	uv run isort . --profile=black
+	uv run ruff check .
+	uv run ruff format --check .
 	uv run pre-commit run --all-files
 	uv run pytest --cov=./ --cov-report=xml --junitxml=junit.xml -o junit_family=legacy

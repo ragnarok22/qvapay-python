@@ -41,9 +41,7 @@ Tracker = "https://github.com/ragnarok22/qvapay-python/issues"
 [dependency-groups]
 dev = [
     "pytest>=6.2.5",
-    "flake8>=4.0.1",
-    "black>=21.9b0",
-    "isort>=5.9.3",
+    "ruff>=0.11.2",
     "pytest-cov>=3.0.0",
     "commitizen>=2.20.0",
     "anyio[trio]>=3.3.4",
@@ -54,3 +52,14 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E203"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qvapay"]
