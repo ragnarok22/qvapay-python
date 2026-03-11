@@ -32,6 +32,7 @@ class AsyncQvaPayClient:
         self.base_url = "https://qvapay.com/api/v1"
         self.http_client = AsyncClient(
             base_url=self.base_url,
+            params=self.auth_params,
             timeout=self.timeout,
             follow_redirects=True,
         )
@@ -57,7 +58,7 @@ class AsyncQvaPayClient:
         Get info relating to your QvaPay app.
         https://qvapay.com/docs/1.0/app_info
         """
-        response = await self.http_client.post("info", json=self.auth_params)
+        response = await self.http_client.get("info")
         validate_response(response)
         return Info.from_json(response.json())
 
@@ -66,7 +67,7 @@ class AsyncQvaPayClient:
         Get your QvaPay balance.
         https://qvapay.com/docs/1.0/balance
         """
-        response = await self.http_client.post("balance", json=self.auth_params)
+        response = await self.http_client.get("balance")
         validate_response(response)
         return float(response.json())
 
@@ -76,8 +77,7 @@ class AsyncQvaPayClient:
         * page: Page to be fetched.
         https://qvapay.com/docs/1.0/transactions
         """
-        payload = {**self.auth_params, "page": page}
-        response = await self.http_client.post("transactions", json=payload)
+        response = await self.http_client.get("transactions", params={"page": page})
         validate_response(response)
         return PaginatedTransactions.from_json(response.json())
 
@@ -87,9 +87,7 @@ class AsyncQvaPayClient:
         * id: Transaction uuid returned by QvaPay when created.
         https://qvapay.com/docs/1.0/transaction
         """
-        response = await self.http_client.post(
-            f"transactions/{id}", json=self.auth_params
-        )
+        response = await self.http_client.get(f"transaction/{id}")
         validate_response(response)
         return TransactionDetail.from_json(response.json())
 
@@ -102,23 +100,22 @@ class AsyncQvaPayClient:
     ) -> Invoice:
         """
         Creates an invoice.
-        * amount: Amount of money to receive to your wallet, expressed in dollars with
-          two decimals.
-        * description: Description of the invoice to be created, useful to show info to
-          the user who pays. Max 300 chars.
-        * remote_id: Invoice ID on your side (example: in your e-commerce store).
-          Optional.
-        * signed: Generates a signed URL, valid for 30 minutes. Useful to increase
-          security, introducing an expiration datetime. Optional.
+        * amount: Amount of money to receive to your wallet, expressed in
+          dollars with two decimals.
+        * description: Description of the invoice to be created, useful to
+          show info to the user who pays. Max 300 chars.
+        * remote_id: Invoice ID on your side (example: in your e-commerce
+          store). Optional.
+        * signed: Generates a signed URL, valid for 30 minutes. Useful to
+          increase security, introducing an expiration datetime. Optional.
         https://qvapay.com/docs/1.0/create_invoice
         """
-        payload = {
-            **self.auth_params,
+        params = {
             "amount": amount,
             "description": description,
             "remote_id": remote_id,
             "signed": int(signed),
         }
-        response = await self.http_client.post("create_invoice", json=payload)
+        response = await self.http_client.get("create_invoice", params=params)
         validate_response(response)
         return Invoice.from_json(response.json())
