@@ -119,13 +119,14 @@ class TestAsyncAppModule:
     @pytest.mark.anyio
     async def test_delete(self):
         http = AsyncMock()
-        http.delete.return_value = _mock_response({}, status_code=200)
+        http.delete.return_value = _mock_response(DELETE_RESPONSE)
         module = AsyncAppModule(http)
 
-        result = await module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = await module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
 
         http.delete.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
-        assert result is None
+        assert isinstance(app, App)
+        assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
 
 
 # ── Sync app module tests ────────────────────────────────────────────
@@ -168,10 +169,11 @@ class TestSyncAppModule:
 
     def test_delete(self):
         http = MagicMock()
-        http.delete.return_value = _mock_response({}, status_code=200)
+        http.delete.return_value = _mock_response(DELETE_RESPONSE)
         module = SyncAppModule(http)
 
-        result = module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
+        app = module.delete("175e5c5c-8488-4009-ba7d-815bb4015cc6")
 
         http.delete.assert_called_once_with("app/175e5c5c-8488-4009-ba7d-815bb4015cc6")
-        assert result is None
+        assert isinstance(app, App)
+        assert app.uuid == "175e5c5c-8488-4009-ba7d-815bb4015cc6"
