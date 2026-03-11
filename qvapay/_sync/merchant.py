@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from ..http import BASE_URL, DEFAULT_TIMEOUT, SyncClient, TimeoutTypes
+from ..models.app import App
 from ..models.invoice import Invoice
 from ..models.transaction import PaginatedTransactions
 from ..utils import validate_response
@@ -22,8 +23,8 @@ class SyncQvaPayMerchant:
 
     def __post_init__(self):
         self._auth = {
-            "uuid": self.uuid,
-            "secret_key": self.secret_key,
+            "app_id": self.uuid,
+            "app_secret": self.secret_key,
         }
         self._http = SyncClient(
             base_url=BASE_URL,
@@ -40,11 +41,11 @@ class SyncQvaPayMerchant:
     def close(self) -> None:
         self._http.aclose()
 
-    def info(self) -> Any:
+    def info(self) -> App:
         """Get app info."""
         response = self._http.post("info", json=self._auth)
         validate_response(response)
-        return response.json()
+        return App.from_json(response.json())
 
     def balance(self) -> float:
         """Get app owner balance."""

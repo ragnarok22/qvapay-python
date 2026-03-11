@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from ..http import BASE_URL, DEFAULT_TIMEOUT, AsyncClient, TimeoutTypes
+from ..models.app import App
 from ..models.invoice import Invoice
 from ..models.transaction import PaginatedTransactions
 from ..utils import validate_response
@@ -22,8 +23,8 @@ class AsyncQvaPayMerchant:
 
     def __post_init__(self):
         self._auth = {
-            "uuid": self.uuid,
-            "secret_key": self.secret_key,
+            "app_id": self.uuid,
+            "app_secret": self.secret_key,
         }
         self._http = AsyncClient(
             base_url=BASE_URL,
@@ -40,11 +41,11 @@ class AsyncQvaPayMerchant:
     async def close(self) -> None:
         await self._http.aclose()
 
-    async def info(self) -> Any:
+    async def info(self) -> App:
         """Get app info."""
         response = await self._http.post("info", json=self._auth)
         validate_response(response)
-        return response.json()
+        return App.from_json(response.json())
 
     async def balance(self) -> float:
         """Get app owner balance."""

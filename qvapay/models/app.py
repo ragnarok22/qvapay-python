@@ -27,6 +27,7 @@ class App:
         self.name = str(self.name)
         self.enabled = bool(self.enabled)
         self.active = bool(self.active)
+        self.card = bool(self.card)
 
     @classmethod
     def from_json(cls, json: Any) -> "App":
