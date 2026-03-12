@@ -84,7 +84,7 @@ class P2PModule:
 
     async def create_offer(self, **kwargs: Any) -> P2POffer:
         """Create a new P2P offer."""
-        response = await self._http.post("p2p", json=kwargs)
+        response = await self._http.post("p2p/create", json=kwargs)
         validate_response(response)
         return P2POffer.from_json(response.json())
 

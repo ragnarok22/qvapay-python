@@ -1,4 +1,4 @@
-from typing import BinaryIO, List, Optional, Union
+from typing import Any, BinaryIO, List, Optional, Union
 
 from httpx import Client
 
@@ -25,6 +25,12 @@ class AppModule:
     def delete(self, uuid: str) -> App:
         """Delete an app by UUID. Returns the deleted app."""
         response = self._http.delete(f"app/{uuid}")
+        validate_response(response)
+        return App.from_json(response.json()["app"])
+
+    def update(self, uuid: str, **kwargs: Any) -> App:
+        """Update a dev app by UUID."""
+        response = self._http.put(f"app/{uuid}", json=kwargs)
         validate_response(response)
         return App.from_json(response.json()["app"])
 

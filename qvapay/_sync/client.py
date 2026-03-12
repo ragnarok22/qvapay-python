@@ -5,6 +5,7 @@ from .modules.app import AppModule
 from .modules.p2p import P2PModule
 from .modules.payment_links import PaymentLinksModule
 from .modules.store import StoreModule
+from .modules.topup import TopupModule
 from .modules.transactions import TransactionsModule
 from .modules.user import UserModule
 from .modules.withdraw import WithdrawModule
@@ -34,6 +35,7 @@ class SyncQvaPayClient:
         self.p2p = P2PModule(self._http)
         self.payment_links = PaymentLinksModule(self._http)
         self.store = StoreModule(self._http)
+        self.topup = TopupModule(self._http)
 
     def __enter__(self) -> "SyncQvaPayClient":
         return self
