@@ -145,6 +145,19 @@ class TestAsyncAppModule:
         assert app.uuid == "abc123"
 
     @pytest.mark.anyio
+    async def test_update(self):
+        http = AsyncMock()
+        updated = {**GET_RESPONSE["app"], "name": "Updated Name"}
+        http.put.return_value = _mock_response({"result": "OK", "app": updated})
+        module = AsyncAppModule(http)
+
+        app = await module.update("abc123", name="Updated Name")
+
+        http.put.assert_called_once_with("app/abc123", json={"name": "Updated Name"})
+        assert isinstance(app, App)
+        assert app.name == "Updated Name"
+
+    @pytest.mark.anyio
     async def test_create(self):
         http = AsyncMock()
         http.post.return_value = _mock_response(CREATE_RESPONSE)
@@ -236,6 +249,18 @@ class TestSyncAppModule:
         http.delete.assert_called_once_with("app/abc123")
         assert isinstance(app, App)
         assert app.uuid == "abc123"
+
+    def test_update(self):
+        http = MagicMock()
+        updated = {**GET_RESPONSE["app"], "name": "Updated Name"}
+        http.put.return_value = _mock_response({"result": "OK", "app": updated})
+        module = SyncAppModule(http)
+
+        app = module.update("abc123", name="Updated Name")
+
+        http.put.assert_called_once_with("app/abc123", json={"name": "Updated Name"})
+        assert isinstance(app, App)
+        assert app.name == "Updated Name"
 
     def test_create(self):
         http = MagicMock()
