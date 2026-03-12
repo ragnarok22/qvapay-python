@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents when working with code in this repository.
 
 ## Project Overview
 
@@ -32,6 +32,7 @@ Python SDK for the QvaPay API — provides both async (`AsyncQvaPayClient`) and 
 - `client.withdraw` — withdrawal operations
 - `client.p2p` — peer-to-peer offers/messages
 - `client.store` — store products
+- `client.topup` — phone top-up packages
 
 `AsyncQvaPayMerchant` / `SyncQvaPayMerchant` are UUID+secret-authenticated app clients for merchant operations (invoices, transaction status, balance).
 
