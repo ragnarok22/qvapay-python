@@ -22,7 +22,10 @@ class P2POffer:
 
     @classmethod
     def from_json(cls, json: Any) -> "P2POffer":
-        return parse_json(cls, **json)
+        data = {**json}
+        if "price" not in data and "receive" in data:
+            data["price"] = data["receive"]
+        return parse_json(cls, **data)
 
 
 @dataclass

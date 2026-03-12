@@ -47,7 +47,7 @@ class WithdrawModule:
 
     def list(self) -> List[Withdrawal]:
         """Get the last 10 withdrawals for the authenticated user."""
-        response = self._http.get("withdraws")
+        response = self._http.get("withdraw")
         validate_response(response)
         return [Withdrawal.from_json(w) for w in response.json()["data"]]
 
@@ -62,7 +62,7 @@ class WithdrawModule:
         return Withdrawal.from_json(response.json())
 
     def balance(self) -> Any:
-        """Withdraw balance."""
-        response = self._http.post("withdraw/balance")
-        validate_response(response)
-        return response.json()
+        """Deprecated placeholder for an undocumented endpoint."""
+        raise NotImplementedError(
+            "The published Postman collection does not define /withdraw/balance."
+        )

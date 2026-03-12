@@ -115,7 +115,8 @@ transaction = await client.get_transaction(id)
 transactions = await client.get_transactions(page=1)
 ```
 
-You can also read the **QvaPay API** documentation: [qvapay.com/docs](https://qvapay.com/docs).
+The official **QvaPay API** reference for this SDK is the published Postman
+document: [API publica de QvaPay](https://documenter.getpostman.com/view/8765260/TzzHnDGw).
 
 ## For developers
 

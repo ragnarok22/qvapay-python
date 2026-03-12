@@ -293,13 +293,13 @@ class TestAsyncWithdrawList:
     async def test_list(self):
         http = AsyncMock()
         http.get.return_value = _mock_response(
-            LIST_RESPONSE, method="GET", url="https://api.qvapay.com/withdraws"
+            LIST_RESPONSE, method="GET", url="https://api.qvapay.com/withdraw"
         )
         module = AsyncWithdrawModule(http)
 
         results = await module.list()
 
-        http.get.assert_called_once_with("withdraws")
+        http.get.assert_called_once_with("withdraw")
         assert len(results) == 1
         assert isinstance(results[0], Withdrawal)
         assert results[0].amount == 30.0
@@ -414,13 +414,13 @@ class TestSyncWithdrawList:
     def test_list(self):
         http = MagicMock()
         http.get.return_value = _mock_response(
-            LIST_RESPONSE, method="GET", url="https://api.qvapay.com/withdraws"
+            LIST_RESPONSE, method="GET", url="https://api.qvapay.com/withdraw"
         )
         module = SyncWithdrawModule(http)
 
         results = module.list()
 
-        http.get.assert_called_once_with("withdraws")
+        http.get.assert_called_once_with("withdraw")
         assert len(results) == 1
         assert isinstance(results[0], Withdrawal)
         assert results[0].amount == 30.0

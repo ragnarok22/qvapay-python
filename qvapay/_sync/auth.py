@@ -61,13 +61,14 @@ def register(
 
 def request_pin(
     email: str,
+    password: str,
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
 ) -> None:
-    """Request a PIN code to the given email."""
+    """Request a temporary login PIN using email and password."""
     with _client(timeout) as client:
         response = client.post(
-            "auth/request_pin",
-            json={"email": email},
+            "auth/request-pin",
+            json={"email": email, "password": password},
         )
         validate_response(response)
 

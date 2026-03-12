@@ -145,7 +145,7 @@ def _mock_response(
     json_data,
     status_code: int = 200,
     method: str = "GET",
-    url: str = "https://api.qvapay.com/transactions",
+    url: str = "https://api.qvapay.com/transaction",
 ) -> httpx.Response:
     return httpx.Response(
         status_code=status_code,
@@ -286,7 +286,7 @@ class TestAsyncTransactionsList:
 
         txs = await module.list()
 
-        http.get.assert_called_once_with("transactions", params={})
+        http.get.assert_called_once_with("transaction", params={})
         assert len(txs) == 3
         assert all(isinstance(t, Transaction) for t in txs)
         assert txs[0].uuid == "tx123abc"
@@ -301,7 +301,7 @@ class TestAsyncTransactionsList:
 
         txs = await module.list(status="paid")
 
-        http.get.assert_called_once_with("transactions", params={"status": "paid"})
+        http.get.assert_called_once_with("transaction", params={"status": "paid"})
         assert len(txs) == 1
 
     @pytest.mark.anyio
@@ -316,7 +316,7 @@ class TestAsyncTransactionsList:
         )
 
         http.get.assert_called_once_with(
-            "transactions",
+            "transaction",
             params={
                 "start": "2021-10-17 13:05:30",
                 "end": "2021-10-17 13:10:10",
@@ -382,7 +382,7 @@ class TestSyncTransactionsList:
 
         txs = module.list()
 
-        http.get.assert_called_once_with("transactions", params={})
+        http.get.assert_called_once_with("transaction", params={})
         assert len(txs) == 3
         assert all(isinstance(t, Transaction) for t in txs)
         assert txs[0].uuid == "tx123abc"
@@ -394,7 +394,7 @@ class TestSyncTransactionsList:
 
         txs = module.list(status="paid")
 
-        http.get.assert_called_once_with("transactions", params={"status": "paid"})
+        http.get.assert_called_once_with("transaction", params={"status": "paid"})
         assert len(txs) == 1
 
     def test_list_with_all_filters(self):
@@ -509,7 +509,7 @@ class TestAsyncTransactionsTransfer:
             TRANSFER_RESPONSE,
             status_code=201,
             method="POST",
-            url="https://api.qvapay.com/transactions/transfer",
+            url="https://api.qvapay.com/transaction/transfer",
         )
         module = AsyncTransactionsModule(http)
 
@@ -520,7 +520,7 @@ class TestAsyncTransactionsTransfer:
         )
 
         http.post.assert_called_once_with(
-            "transactions/transfer",
+            "transaction/transfer",
             json={
                 "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
                 "amount": 1,
@@ -540,7 +540,7 @@ class TestAsyncTransactionsTransfer:
             TRANSFER_RESPONSE,
             status_code=201,
             method="POST",
-            url="https://api.qvapay.com/transactions/transfer",
+            url="https://api.qvapay.com/transaction/transfer",
         )
         module = AsyncTransactionsModule(http)
 
@@ -563,7 +563,7 @@ class TestSyncTransactionsTransfer:
             TRANSFER_RESPONSE,
             status_code=201,
             method="POST",
-            url="https://api.qvapay.com/transactions/transfer",
+            url="https://api.qvapay.com/transaction/transfer",
         )
         module = SyncTransactionsModule(http)
 
@@ -574,7 +574,7 @@ class TestSyncTransactionsTransfer:
         )
 
         http.post.assert_called_once_with(
-            "transactions/transfer",
+            "transaction/transfer",
             json={
                 "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
                 "amount": 1,
@@ -598,7 +598,7 @@ class TestAsyncTransactionsTransferApp:
             TRANSFER_RESPONSE,
             status_code=201,
             method="POST",
-            url="https://api.qvapay.com/transactions/transfer_app",
+            url="https://api.qvapay.com/transaction/transfer",
         )
         module = AsyncTransactionsModule(http)
 
@@ -609,7 +609,7 @@ class TestAsyncTransactionsTransferApp:
         )
 
         http.post.assert_called_once_with(
-            "transactions/transfer_app",
+            "transaction/transfer",
             json={
                 "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
                 "amount": 1,
@@ -632,7 +632,7 @@ class TestSyncTransactionsTransferApp:
             TRANSFER_RESPONSE,
             status_code=201,
             method="POST",
-            url="https://api.qvapay.com/transactions/transfer_app",
+            url="https://api.qvapay.com/transaction/transfer",
         )
         module = SyncTransactionsModule(http)
 
@@ -643,7 +643,7 @@ class TestSyncTransactionsTransferApp:
         )
 
         http.post.assert_called_once_with(
-            "transactions/transfer_app",
+            "transaction/transfer",
             json={
                 "to": "796a9e71-3d67-4a42-9dc2-02a5d069fa23",
                 "amount": 1,
@@ -689,7 +689,7 @@ class TestAsyncTransactionsPay:
         http.post.return_value = _mock_response(
             PAY_RESPONSE,
             method="POST",
-            url="https://api.qvapay.com/transactions/pay",
+            url="https://api.qvapay.com/transaction/4cc0e747-e329-443d-99c0-5cff3394fb7b/pay",
         )
         module = AsyncTransactionsModule(http)
 
@@ -699,7 +699,7 @@ class TestAsyncTransactionsPay:
         )
 
         http.post.assert_called_once_with(
-            "transactions/pay",
+            "transaction/4cc0e747-e329-443d-99c0-5cff3394fb7b/pay",
             json={
                 "uuid": "4cc0e747-e329-443d-99c0-5cff3394fb7b",
                 "pin": "0000",
@@ -723,7 +723,7 @@ class TestSyncTransactionsPay:
         http.post.return_value = _mock_response(
             PAY_RESPONSE,
             method="POST",
-            url="https://api.qvapay.com/transactions/pay",
+            url="https://api.qvapay.com/transaction/4cc0e747-e329-443d-99c0-5cff3394fb7b/pay",
         )
         module = SyncTransactionsModule(http)
 
@@ -733,7 +733,7 @@ class TestSyncTransactionsPay:
         )
 
         http.post.assert_called_once_with(
-            "transactions/pay",
+            "transaction/4cc0e747-e329-443d-99c0-5cff3394fb7b/pay",
             json={
                 "uuid": "4cc0e747-e329-443d-99c0-5cff3394fb7b",
                 "pin": "0000",

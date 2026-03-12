@@ -31,6 +31,24 @@ class P2PModule:
         self._http = http
         self.chat = ChatSubModule(http)
 
+    @staticmethod
+    def _normalize_params(**kwargs: Any) -> dict[str, Any]:
+        params: dict[str, Any] = {}
+        for key, value in kwargs.items():
+            if value is None:
+                continue
+            if isinstance(value, bool):
+                params[key] = str(value).lower()
+            else:
+                params[key] = value
+        return params
+
+    @staticmethod
+    def _offer_items(payload: Any) -> list[Any]:
+        if isinstance(payload, dict) and isinstance(payload.get("data"), list):
+            return payload["data"]
+        return payload
+
     def average(self, coin: str) -> Any:
         """Get P2P average for a coin."""
         response = self._http.get("p2p/average", params={"coin": coin})
@@ -43,32 +61,38 @@ class P2PModule:
         validate_response(response)
         return response.json()
 
-    def completed_pairs_average(self, coin: str) -> float:
-        """Get completed trading pairs average."""
+    def completed_pairs_average(self, coin: str) -> Any:
+        """Get aggregate stats for completed trading pairs."""
         response = self._http.get(
             "p2p/completed_pairs_average",
             params={"coin": coin.upper()},
         )
         validate_response(response)
-        return float(response.text)
+        return response.json()
 
     def total_public_open_ops(self) -> Any:
         """Get total public open operations."""
-        response = self._http.get("p2p/total_public_open_ops")
+        response = self._http.get("p2p/get_total_operations")
         validate_response(response)
         return response.json()
 
-    def get_offers(self) -> List[P2POffer]:
+    def get_offers(self, **filters: Any) -> List[P2POffer]:
         """Get all P2P offers."""
-        response = self._http.get("p2p")
+        response = self._http.get(
+            "p2p",
+            params=self._normalize_params(**filters),
+        )
         validate_response(response)
-        return [P2POffer.from_json(o) for o in response.json()]
+        return [P2POffer.from_json(o) for o in self._offer_items(response.json())]
 
-    def get_my_offers(self) -> List[P2POffer]:
+    def get_my_offers(self, **filters: Any) -> List[P2POffer]:
         """Get my P2P offers."""
-        response = self._http.get("p2p/my")
+        response = self._http.get(
+            "p2p",
+            params=self._normalize_params(my=True, **filters),
+        )
         validate_response(response)
-        return [P2POffer.from_json(o) for o in response.json()]
+        return [P2POffer.from_json(o) for o in self._offer_items(response.json())]
 
     def get_offer(self, uuid: str) -> P2POffer:
         """Get a specific P2P offer."""
@@ -78,7 +102,7 @@ class P2PModule:
 
     def get_offer_public(self, uuid: str) -> P2POffer:
         """Get public data of a P2P offer."""
-        response = self._http.get(f"p2p/{uuid}/public")
+        response = self._http.get(f"p2p/{uuid}/pub")
         validate_response(response)
         return P2POffer.from_json(response.json())
 
@@ -102,13 +126,13 @@ class P2PModule:
 
     def mark_paid(self, uuid: str) -> Any:
         """Mark a P2P offer as paid."""
-        response = self._http.post(f"p2p/{uuid}/mark_paid")
+        response = self._http.post(f"p2p/{uuid}/paid")
         validate_response(response)
         return response.json()
 
     def confirm_received(self, uuid: str) -> Any:
         """Confirm received for a P2P offer."""
-        response = self._http.post(f"p2p/{uuid}/confirm_received")
+        response = self._http.post(f"p2p/{uuid}/received")
         validate_response(response)
         return response.json()
 

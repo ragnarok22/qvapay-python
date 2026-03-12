@@ -63,20 +63,27 @@ class TransactionsModule:
             remote_id=remote_id,
             description=description,
         )
-        response = await self._http.get("transactions", params=params)
+        response = await self._http.get("transaction", params=params)
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
     async def sent_to_user(
         self,
+        user_uuid: str,
         *,
+        take: Optional[int] = None,
         start: Optional[str] = None,
         end: Optional[str] = None,
         status: Optional[str] = None,
         remote_id: Optional[str] = None,
         description: Optional[str] = None,
     ) -> List[Transaction]:
-        """Get transactions sent to user."""
+        """Get transactions sent to a specific user.
+
+        Args:
+            user_uuid: UUID of the recipient user.
+            take: Number of results to return.
+        """
         params = self._build_params(
             start=start,
             end=end,
@@ -84,28 +91,16 @@ class TransactionsModule:
             remote_id=remote_id,
             description=description,
         )
-        response = await self._http.get("transactions/sent", params=params)
+        params["user_uuid"] = user_uuid
+        if take is not None:
+            params["take"] = str(take)
+        response = await self._http.get("transaction", params=params)
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
-    async def latest_sent(
-        self,
-        *,
-        start: Optional[str] = None,
-        end: Optional[str] = None,
-        status: Optional[str] = None,
-        remote_id: Optional[str] = None,
-        description: Optional[str] = None,
-    ) -> List[Transaction]:
+    async def latest_sent(self) -> List[Transaction]:
         """Get latest users sent transactions."""
-        params = self._build_params(
-            start=start,
-            end=end,
-            status=status,
-            remote_id=remote_id,
-            description=description,
-        )
-        response = await self._http.get("transactions/latest_sent", params=params)
+        response = await self._http.get("transaction/latestusers")
         validate_response(response)
         return [Transaction.from_json(t) for t in response.json()]
 
@@ -117,12 +112,16 @@ class TransactionsModule:
 
     async def get_pdf(self, uuid: str) -> bytes:
         """Get a transaction details as PDF."""
-        response = await self._http.get(f"transactions/{uuid}/pdf")
+        response = await self._http.get(f"transaction/{uuid}/pdf")
         validate_response(response)
         return response.content
 
     async def transfer(
-        self, to: str, amount: float, description: str = ""
+        self,
+        to: str,
+        amount: float,
+        description: str = "",
+        pin: Optional[str] = None,
     ) -> Transaction:
         """Transfer balance to another user.
 
@@ -138,12 +137,18 @@ class TransactionsModule:
             "amount": amount,
             "description": description,
         }
-        response = await self._http.post("transactions/transfer", json=payload)
+        if pin is not None:
+            payload["pin"] = pin
+        response = await self._http.post("transaction/transfer", json=payload)
         validate_response(response)
         return Transaction.from_json(response.json())
 
     async def transfer_app(
-        self, to: str, amount: float, description: str = ""
+        self,
+        to: str,
+        amount: float,
+        description: str = "",
+        pin: Optional[str] = None,
     ) -> Transaction:
         """Transfer balance via app.
 
@@ -159,7 +164,9 @@ class TransactionsModule:
             "amount": amount,
             "description": description,
         }
-        response = await self._http.post("transactions/transfer_app", json=payload)
+        if pin is not None:
+            payload["pin"] = pin
+        response = await self._http.post("transaction/transfer", json=payload)
         validate_response(response)
         return Transaction.from_json(response.json())
 
@@ -171,6 +178,6 @@ class TransactionsModule:
             pin: User's PIN (default is "0000").
         """
         payload = {"uuid": uuid, "pin": pin}
-        response = await self._http.post("transactions/pay", json=payload)
+        response = await self._http.post(f"transaction/{uuid}/pay", json=payload)
         validate_response(response)
         return Transaction.from_json(response.json())

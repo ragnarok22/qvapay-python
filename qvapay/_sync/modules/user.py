@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Optional
 
 from httpx import Client
 
@@ -16,13 +16,13 @@ class PaymentMethodsSubModule:
 
     def list(self) -> List[PaymentMethod]:
         """List saved payment methods."""
-        response = self._http.get("user/payment_methods")
+        response = self._http.get("user/payment-methods")
         validate_response(response)
         return [PaymentMethod.from_json(m) for m in response.json()]
 
     def create(self, **kwargs: Any) -> PaymentMethod:
         """Create a payment method."""
-        response = self._http.post("user/payment_methods", json=kwargs)
+        response = self._http.post("user/payment-methods", json=kwargs)
         validate_response(response)
         return PaymentMethod.from_json(response.json())
 
@@ -33,18 +33,21 @@ class UserPaymentLinksSubModule:
 
     def list(self) -> List[PaymentLink]:
         """List saved payment links."""
-        response = self._http.get("user/payment_links")
+        response = self._http.get("user/payment-links")
         validate_response(response)
         return [PaymentLink.from_json(item) for item in response.json()]
 
-    def delete(self, uuid: str) -> None:
-        """Delete a payment link."""
-        response = self._http.delete(f"user/payment_links/{uuid}")
+    def delete(self, link_id: Any) -> None:
+        """Delete a payment link by ID."""
+        response = self._http.delete(
+            "user/payment-links",
+            json={"id": link_id},
+        )
         validate_response(response)
 
     def create(self, **kwargs: Any) -> PaymentLink:
         """Create a payment link."""
-        response = self._http.post("user/payment_links", json=kwargs)
+        response = self._http.post("user/payment-links", json=kwargs)
         validate_response(response)
         return PaymentLink.from_json(response.json())
 
@@ -55,13 +58,13 @@ class ContactsSubModule:
 
     def list(self) -> List[Contact]:
         """List saved contacts."""
-        response = self._http.get("user/contacts")
+        response = self._http.get("user/contact")
         validate_response(response)
         return [Contact.from_json(c) for c in response.json()]
 
     def save(self, **kwargs: Any) -> Contact:
         """Save a contact."""
-        response = self._http.post("user/contacts", json=kwargs)
+        response = self._http.post("user/contact", json=kwargs)
         validate_response(response)
         return Contact.from_json(response.json())
 
@@ -72,15 +75,26 @@ class DomainsSubModule:
 
     def check(self, domain: str) -> Domain:
         """Check domain availability."""
-        response = self._http.get("user/domains/check", params={"domain": domain})
+        response = self._http.get("domain", params={"name": domain})
         validate_response(response)
         return Domain.from_json(response.json())
 
     def get_available(self, **kwargs: Any) -> Domain:
         """Get an available domain."""
-        response = self._http.post("user/domains/available", json=kwargs)
+        response = self._http.post("domain", json=kwargs)
         validate_response(response)
         return Domain.from_json(response.json())
+
+
+class SavingsSubModule:
+    def __init__(self, http: Client):
+        self._http = http
+
+    def status(self) -> Any:
+        """Get savings status."""
+        response = self._http.get("saving")
+        validate_response(response)
+        return response.json()
 
 
 class UserModule:
@@ -90,46 +104,62 @@ class UserModule:
         self.payment_links = UserPaymentLinksSubModule(http)
         self.contacts = ContactsSubModule(http)
         self.domains = DomainsSubModule(http)
+        self.savings = SavingsSubModule(http)
 
     def me(self) -> User:
         """Get current user profile."""
-        response = self._http.get("user/me")
+        response = self._http.get("user")
         validate_response(response)
         return User.from_json(response.json())
 
     def me_extended(self) -> User:
         """Get extended user profile."""
-        response = self._http.get("user/me/extended")
+        response = self._http.get("user/extended")
         validate_response(response)
         return User.from_json(response.json())
 
     def update(self, **kwargs: Any) -> User:
         """Update user profile."""
-        response = self._http.put("user/me", json=kwargs)
+        response = self._http.put("user/update", json=kwargs)
         validate_response(response)
         return User.from_json(response.json())
 
-    def update_email(self, email: str) -> User:
-        """Update user email."""
-        response = self._http.put("user/me/email", json={"email": email})
+    def update_email(self, email: str, pin: Optional[str] = None) -> User:
+        """Update user email.
+
+        On first call, sends a verification PIN to the new address.
+        On second call, pass the PIN to confirm the change.
+        """
+        payload: dict = {"email": email}
+        if pin is not None:
+            payload["pin"] = pin
+        response = self._http.put("user/update/email", json=payload)
         validate_response(response)
         return User.from_json(response.json())
 
     def update_username(self, username: str) -> User:
         """Update username."""
-        response = self._http.put("user/me/username", json={"username": username})
+        response = self._http.put("user/update/username", json={"username": username})
         validate_response(response)
         return User.from_json(response.json())
 
     def upload_avatar(self, file: Any) -> User:
-        """Upload user avatar."""
-        response = self._http.post("user/me/avatar", files={"avatar": file})
+        """Upload user avatar (128×128 px, JPG/JPEG/PNG, max 5 MB)."""
+        response = self._http.post(
+            "user/avatar",
+            data={"type": "avatar"},
+            files={"avatar": file},
+        )
         validate_response(response)
         return User.from_json(response.json())
 
     def upload_cover(self, file: Any) -> User:
-        """Upload user cover image."""
-        response = self._http.post("user/me/cover", files={"cover": file})
+        """Upload user cover photo (1088×256 px, JPG/JPEG/PNG, max 10 MB)."""
+        response = self._http.post(
+            "user/avatar",
+            data={"type": "cover"},
+            files={"cover": file},
+        )
         validate_response(response)
         return User.from_json(response.json())
 
@@ -145,10 +175,23 @@ class UserModule:
         validate_response(response)
         return response.json()
 
-    def topup(self, pay_method: str, amount: float) -> Any:
-        """Top up balance."""
-        payload = {"pay_method": pay_method, "amount": amount}
-        response = self._http.post("user/topup", json=payload)
+    def topup(
+        self,
+        pay_method: str,
+        amount: float,
+        webhook_url: Optional[str] = None,
+    ) -> Any:
+        """Top up balance.
+
+        Args:
+            pay_method: Payment method e.g. ``"BTCLN"``, ``"USDT"``.
+            amount: Amount to top up.
+            webhook_url: Optional URL to receive a webhook notification.
+        """
+        payload: dict = {"pay_method": pay_method, "amount": amount}
+        if webhook_url is not None:
+            payload["webhook_url"] = webhook_url
+        response = self._http.post("topup", json=payload)
         validate_response(response)
         return response.json()
 
@@ -165,7 +208,7 @@ class UserModule:
         return response.json()
 
     def gold_status(self) -> Any:
-        """Get user gold status."""
+        """Get user gold membership status."""
         response = self._http.get("user/gold")
         validate_response(response)
         return response.json()
@@ -176,8 +219,7 @@ class UserModule:
         validate_response(response)
         return response.json()
 
+    # Keep backwards-compatible savings_status() alias
     def savings_status(self) -> Any:
-        """Get savings status."""
-        response = self._http.get("user/savings")
-        validate_response(response)
-        return response.json()
+        """Get savings status. Alias for user.savings.status()."""
+        return self.savings.status()

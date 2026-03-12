@@ -16,6 +16,7 @@ from .models.p2p import P2PMessage, P2POffer
 from .models.payment_link import PaymentLink
 from .models.payment_method import PaymentMethod
 from .models.product import Product
+from .models.purchased_product import PurchasedProduct
 from .models.transaction import (
     PaginatedTransactions,
     Transaction,
@@ -48,6 +49,7 @@ __all__ = [
     "PaymentLink",
     "PaymentMethod",
     "Product",
+    "PurchasedProduct",
     "Transaction",
     "TransactionDetail",
     "User",

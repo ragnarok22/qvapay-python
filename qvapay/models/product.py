@@ -21,4 +21,6 @@ class Product:
 
     @classmethod
     def from_json(cls, json: Any) -> "Product":
-        return parse_json(cls, **json)
+        aliases = {"desc": "description"}
+        mapped = {aliases.get(k, k): v for k, v in json.items()}
+        return parse_json(cls, **mapped)

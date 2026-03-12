@@ -1,7 +1,6 @@
-from typing import List
+from typing import Any, List
 
 from ..http import BASE_URL, DEFAULT_TIMEOUT, SyncClient, TimeoutTypes
-from ..models.coin import CoinCategory
 from ..utils import validate_response
 
 
@@ -15,9 +14,9 @@ def _client(timeout: TimeoutTypes) -> SyncClient:
 
 def list(
     timeout: TimeoutTypes = DEFAULT_TIMEOUT,
-) -> List[CoinCategory]:
+) -> List[Any]:
     """Get current stock/exchange data."""
     with _client(timeout) as client:
-        response = client.get("coins")
+        response = client.get("stocks/index")
         validate_response(response)
-        return [CoinCategory.from_json(item) for item in response.json()]
+        return response.json()

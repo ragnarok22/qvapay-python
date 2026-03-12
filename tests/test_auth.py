@@ -423,11 +423,11 @@ class TestAsyncRequestPin:
         mock_client.__aexit__.return_value = False
 
         with patch("qvapay._async.auth._client", return_value=mock_client):
-            result = await async_auth.request_pin("user@example.com")
+            result = await async_auth.request_pin("user@example.com", "secret123!")
 
         mock_client.post.assert_called_once_with(
-            "auth/request_pin",
-            json={"email": "user@example.com"},
+            "auth/request-pin",
+            json={"email": "user@example.com", "password": "secret123!"},
         )
         assert result is None
 
@@ -442,7 +442,7 @@ class TestAsyncRequestPin:
 
         with patch("qvapay._async.auth._client", return_value=mock_client):
             with pytest.raises(QvaPayError) as exc_info:
-                await async_auth.request_pin("")
+                await async_auth.request_pin("", "")
 
         assert exc_info.value.status_code == 422
         assert "email" in exc_info.value.status_message
@@ -459,11 +459,11 @@ class TestSyncRequestPin:
         mock_client.__exit__.return_value = False
 
         with patch("qvapay._sync.auth._client", return_value=mock_client):
-            result = sync_auth.request_pin("user@example.com")
+            result = sync_auth.request_pin("user@example.com", "secret123!")
 
         mock_client.post.assert_called_once_with(
-            "auth/request_pin",
-            json={"email": "user@example.com"},
+            "auth/request-pin",
+            json={"email": "user@example.com", "password": "secret123!"},
         )
         assert result is None
 
@@ -477,7 +477,7 @@ class TestSyncRequestPin:
 
         with patch("qvapay._sync.auth._client", return_value=mock_client):
             with pytest.raises(QvaPayError) as exc_info:
-                sync_auth.request_pin("")
+                sync_auth.request_pin("", "")
 
         assert exc_info.value.status_code == 422
         assert "email" in exc_info.value.status_message

@@ -27,7 +27,7 @@ def _mock_response(
     json_data,
     status_code: int = 200,
     method: str = "GET",
-    url: str = "https://api.qvapay.com/topup/products",
+    url: str = "https://api.qvapay.com/store/phone_package",
 ) -> httpx.Response:
     return httpx.Response(
         status_code=status_code,
@@ -43,12 +43,12 @@ class TestAsyncTopupModule:
     @pytest.mark.anyio
     async def test_list_products(self):
         http = AsyncMock()
-        http.get.return_value = _mock_response(PRODUCTS_DATA)
+        http.get.return_value = _mock_response({"phone_packages": PRODUCTS_DATA})
         module = AsyncTopupModule(http)
 
         products = await module.list_products()
 
-        http.get.assert_called_once_with("topup/products")
+        http.get.assert_called_once_with("store/phone_package")
         assert products == PRODUCTS_DATA
         assert len(products) == 2
         assert products[0]["name"] == "Cubacel 250 CUP"
@@ -73,12 +73,12 @@ class TestAsyncTopupModule:
 class TestSyncTopupModule:
     def test_list_products(self):
         http = MagicMock()
-        http.get.return_value = _mock_response(PRODUCTS_DATA)
+        http.get.return_value = _mock_response({"phone_packages": PRODUCTS_DATA})
         module = SyncTopupModule(http)
 
         products = module.list_products()
 
-        http.get.assert_called_once_with("topup/products")
+        http.get.assert_called_once_with("store/phone_package")
         assert products == PRODUCTS_DATA
         assert len(products) == 2
 

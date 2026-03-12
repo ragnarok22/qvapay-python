@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..http import BASE_URL, DEFAULT_TIMEOUT, SyncClient, TimeoutTypes
+from ..http import DEFAULT_TIMEOUT, V2_BASE_URL, SyncClient, TimeoutTypes
 from ..models.app import App
 from ..models.invoice import Invoice
 from ..models.transaction import PaginatedTransactions
@@ -27,7 +27,7 @@ class SyncQvaPayMerchant:
             "app_secret": self.secret_key,
         }
         self._http = SyncClient(
-            base_url=BASE_URL,
+            base_url=V2_BASE_URL,
             timeout=self.timeout,
             follow_redirects=True,
         )
@@ -86,22 +86,22 @@ class SyncQvaPayMerchant:
         return PaginatedTransactions.from_json(response.json())
 
     def get_transaction_status(self, uuid: str) -> Any:
-        """Get transaction status."""
+        """Get transaction status by UUID."""
         body = {**self._auth, "uuid": uuid}
-        response = self._http.post("transaction_status", json=body)
+        response = self._http.post(f"transactions/{uuid}", json=body)
         validate_response(response)
         return response.json()
 
     def get_payments_authorization(self, **kwargs: Any) -> Any:
-        """Get payments authorization."""
+        """Get payments authorization URL."""
         body = {**self._auth, **kwargs}
-        response = self._http.post("payments_authorization", json=body)
+        response = self._http.post("authorize_payments", json=body)
         validate_response(response)
         return response.json()
 
     def charge_user(self, **kwargs: Any) -> Any:
         """Charge a user with an authorized token."""
         body = {**self._auth, **kwargs}
-        response = self._http.post("charge_user", json=body)
+        response = self._http.post("charge", json=body)
         validate_response(response)
         return response.json()

@@ -10,7 +10,12 @@ class TopupModule:
         self._http = http
 
     async def list_products(self) -> List[Any]:
-        """List available phone top-up products."""
-        response = await self._http.get("topup/products")
+        """List available phone top-up packages."""
+        response = await self._http.get("store/phone_package")
         validate_response(response)
-        return response.json()
+        payload = response.json()
+        if isinstance(payload, dict) and isinstance(
+            payload.get("phone_packages"), list
+        ):
+            return payload["phone_packages"]
+        return payload
