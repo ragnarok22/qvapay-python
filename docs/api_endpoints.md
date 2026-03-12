@@ -39,15 +39,21 @@ shows a publish date of March 13, 2025 and uses these base URLs:
 ### Transactions
 
 - `GET /transaction`
+- `GET /transaction?user_uuid={user_uuid}`
 - `GET /transaction/latestusers`
 - `GET /transaction/{uuid}`
 - `GET /transaction/{uuid}/pdf`
 - `POST /transaction/transfer`
+- `POST /transaction/pay`
 - `POST /transaction/{uuid}/pay`
 
 Notes:
 - Sent-to-user lookups are the same `GET /transaction` endpoint with query
   parameters such as `user_uuid` and `take`.
+- The Postman collection renders the pay request as `POST /transaction/pay`
+  and also shows a blank path segment in the raw request URL. Its description
+  says the transaction UUID is required, so this SDK treats the effective route
+  as `POST /transaction/{uuid}/pay`.
 - The published collection uses the same transfer endpoint for both regular and
   app transfer examples.
 
@@ -93,6 +99,7 @@ Notes:
 ### P2P
 
 - `GET /p2p`
+- `GET /p2p?my=true`
 - `GET /p2p/average`
 - `GET /p2p/averages`
 - `GET /p2p/completed_pairs_average`
