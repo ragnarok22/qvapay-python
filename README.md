@@ -17,112 +17,296 @@ Non official, but friendly QvaPay library for the Python language.
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-## Setup
-
-You can install this package by using the pip tool and installing:
+## Installation
 
 ```bash
 pip install qvapay
 ```
 
-Or
+Or with [uv](https://docs.astral.sh/uv/):
 
 ```bash
-easy_install qvapay
+uv add qvapay
 ```
 
-## Sign up on **QvaPay**
+## Sign up on QvaPay
 
 Create your account to process payments through **QvaPay** at [qvapay.com/register](https://qvapay.com/register).
 
-## Using the client
+## Quick start
 
-First, import the `AsyncQvaPayClient` (or `SyncQvaPayClient`) class and create your **QvaPay** asynchronous (or synchronous) client using your app credentials.
+The SDK provides two types of clients:
+
+- **User clients** (`AsyncQvaPayClient` / `SyncQvaPayClient`) — Bearer-token authenticated, for user-level operations.
+- **Merchant clients** (`AsyncQvaPayMerchant` / `SyncQvaPayMerchant`) — UUID + secret key authenticated, for app-level operations like invoicing.
+
+### Authentication
+
+Use the standalone `auth` module to obtain an access token:
 
 ```python
-from qvapay.v1 import AsyncQvaPayClient
+from qvapay import auth
 
-client = AsyncQvaPayClient(app_id, app_secret)
+# Async
+token = await auth.login("email@example.com", "password")
+print(token.access_token)
 ```
 
-It is also possible to use the `QvaPayAuth` class (which by default obtains its properties from environment variables or from the content of the `.env` file) and the static method `AsyncQvaPayClient.from_auth` (or `SyncQvaPayClient.from_auth`) to initialize the client.
+For the sync equivalent:
 
 ```python
-from qvapay.v1 import AsyncQvaPayClient, QvaPayAuth
+from qvapay._sync import auth
 
-client = AsyncQvaPayClient.from_auth(QvaPayAuth())
+token = auth.login("email@example.com", "password")
 ```
 
-### Use context manager
+The `auth` module also provides `register`, `request_pin`, `check`, and `logout` functions.
 
-The recommended way to use a client is as a context manager. For example:
+### User client
+
+Create a client with the access token obtained from login:
 
 ```python
-async with AsyncQvaPayClient(...) as client:
-    # Do anything you want
-    ...
+from qvapay import AsyncQvaPayClient
+
+async with AsyncQvaPayClient(access_token="your-token") as client:
+    profile = await client.user.me()
+    print(profile.username)
 ```
 
-or
+Or synchronously:
 
 ```python
-with SyncQvaPayClient(...) as client:
-    # Do anything you want
-    ...
+from qvapay import SyncQvaPayClient
+
+with SyncQvaPayClient(access_token="your-token") as client:
+    profile = client.user.me()
+    print(profile.username)
 ```
 
-### Get your app info
+### Merchant client
+
+For app-level operations, use the merchant client with your app UUID and secret key (get these at [qvapay.com/apps/create](https://qvapay.com/apps/create)):
 
 ```python
-# Use await when using AsyncQvaPayClient
-# With SyncQvaPayClient it is not necessary.
-info = await client.get_info()
+from qvapay import AsyncQvaPayMerchant
+
+async with AsyncQvaPayMerchant(uuid="app-uuid", secret_key="app-secret") as merchant:
+    invoice = await merchant.create_invoice(
+        amount=10.00,
+        description="Ebook",
+        remote_id="EE-BOOK-123",
+    )
+    print(invoice.url)
 ```
 
-### Get your account balance
+## User client modules
+
+The user client organizes functionality into modules accessed as attributes:
+
+### Transactions (`client.transactions`)
 
 ```python
-# Use await when using AsyncQvaPayClient
-# With SyncQvaPayClient it is not necessary.
-balance = await client.get_balance()
+# List recent transactions (with optional filters)
+transactions = await client.transactions.list(
+    start="2024-01-01",
+    end="2024-12-31",
+    status="completed",
+)
+
+# Get a specific transaction
+detail = await client.transactions.get("transaction-uuid")
+
+# Transfer balance to another user (by UUID, email, or phone)
+tx = await client.transactions.transfer(
+    to="user@email.com",
+    amount=5.00,
+    description="Payment for services",
+)
+
+# Pay a pending transaction
+tx = await client.transactions.pay("transaction-uuid", pin="1234")
+
+# Download transaction PDF
+pdf_bytes = await client.transactions.get_pdf("transaction-uuid")
 ```
 
-### Create an invoice
+### User profile (`client.user`)
 
 ```python
-# Use await when using AsyncQvaPayClient
-# With SyncQvaPayClient it is not necessary.
-transaction = await client.create_invoice(
-    amount=10,
-    description='Ebook',
-    remote_id='EE-BOOk-123' # example remote invoice id
+profile = await client.user.me()
+extended = await client.user.me_extended()
+
+# Update profile
+await client.user.update(bio="Hello world")
+await client.user.update_username("new_username")
+
+# Search users
+users = await client.user.search("john")
+
+# KYC verification
+status = await client.user.kyc_status()
+
+# Sub-modules
+contacts = await client.user.contacts.list()
+methods = await client.user.payment_methods.list()
+domains = await client.user.domains.check("example.com")
+```
+
+### Apps (`client.app`)
+
+```python
+apps = await client.app.list()
+app = await client.app.get("app-uuid")
+new_app = await client.app.create(
+    name="My App",
+    url="https://example.com",
+    desc="My QvaPay app",
+    callback="https://example.com/callback",
 )
 ```
 
-### Get transaction
+### P2P trading (`client.p2p`)
 
 ```python
-# Use await when using AsyncQvaPayClient
-# With SyncQvaPayClient it is not necessary.
-transaction = await client.get_transaction(id)
+offers = await client.p2p.get_offers(coin="USDT", type="buy")
+offer = await client.p2p.create_offer(coin="USDT", amount=100, price=1.05, type="sell")
+
+# Chat
+messages = await client.p2p.chat.get("offer-uuid")
+await client.p2p.chat.send("offer-uuid", "Hello!")
+
+# Trade flow
+await client.p2p.apply("offer-uuid")
+await client.p2p.mark_paid("offer-uuid")
+await client.p2p.confirm_received("offer-uuid")
 ```
 
-### Get transactions
+### Withdrawals (`client.withdraw`)
 
 ```python
-# Use await when using AsyncQvaPayClient
-# With SyncQvaPayClient it is not necessary.
-transactions = await client.get_transactions(page=1)
+withdrawal = await client.withdraw.create(
+    pay_method="USDT",
+    amount=50.00,
+    details={"address": "0x..."},
+)
+withdrawals = await client.withdraw.list()
 ```
 
-The official **QvaPay API** reference for this SDK is the published Postman
-document: [API publica de QvaPay](https://documenter.getpostman.com/view/8765260/TzzHnDGw).
+### Payment links (`client.payment_links`)
+
+```python
+links = await client.payment_links.list()
+link = await client.payment_links.create(
+    name="Donation",
+    product_id="product-uuid",
+    amount=5.00,
+)
+```
+
+### Store (`client.store`)
+
+```python
+products = await client.store.products()
+purchased = await client.store.my_purchased()
+
+# Sub-modules
+packages = await client.store.phone_package.list()
+cards = await client.store.gift_card.catalog()
+```
+
+### Top-up (`client.topup`)
+
+```python
+packages = await client.topup.list_products()
+```
+
+## Merchant client methods
+
+```python
+async with AsyncQvaPayMerchant(uuid="app-uuid", secret_key="secret") as merchant:
+    # App info and balance
+    info = await merchant.info()
+    balance = await merchant.balance()
+
+    # Invoicing
+    invoice = await merchant.create_invoice(
+        amount=25.00,
+        description="Premium Plan",
+        remote_id="INV-001",
+        signed=True,
+    )
+    await merchant.modify_invoice("invoice-uuid", amount=30.00)
+
+    # Transactions
+    txs = await merchant.get_transactions()
+    status = await merchant.get_transaction_status("tx-uuid")
+
+    # Payment authorization
+    auth_url = await merchant.get_payments_authorization(redirect_url="https://...")
+    await merchant.charge_user(token="auth-token", amount=10.00)
+```
+
+## Standalone modules
+
+### Coins
+
+```python
+from qvapay import coins
+
+categories = await coins.list()
+operational = await coins.list_v2(enabled_in=True)
+coin = await coins.get(coin_id=1)
+history = await coins.price_history("BTC", timeframe="7D")
+```
+
+### Stocks
+
+```python
+from qvapay import stocks
+
+data = await stocks.list()
+```
+
+## Error handling
+
+All API errors raise `QvaPayError`:
+
+```python
+from qvapay import QvaPayError
+
+try:
+    await client.transactions.transfer(to="user@email.com", amount=1000)
+except QvaPayError as e:
+    print(e.status_code, e.status_message)
+```
 
 ## For developers
 
-Improve `tests` implementation and add `pre-commit` system to ensure format and style.
+### Setup
+
+```bash
+git clone https://github.com/ragnarok22/qvapay-python.git
+cd qvapay-python
+make install  # or: uv sync
+```
+
+### Commands
+
+- `make tests` — run linting and tests with coverage
+- `make coverage` — tests with terminal coverage report
+- `make format` — auto-format with ruff
+- `make lint` — check formatting without modifying files
 
 ## Migration guide
+
+### 0.3.0 -> 0.9.0
+
+- Imports moved from `qvapay.v1` to `qvapay` (e.g., `from qvapay import AsyncQvaPayClient`)
+- Client methods are now organized into modules: `client.transactions.list()` instead of `client.get_transactions()`
+- New `AsyncQvaPayMerchant` / `SyncQvaPayMerchant` for app-level operations (invoicing, balance)
+- Standalone `auth`, `coins`, and `stocks` modules replace the old `QvaPayAuth` helper
+- Client constructor takes `access_token` instead of `app_id` / `app_secret`
 
 ### 0.2.0 -> 0.3.0
 
@@ -141,7 +325,7 @@ Improve `tests` implementation and add `pre-commit` system to ensure format and 
 - `client.get_balance` instead of `client.balance`
 - `client.get_transactions` instead of `client.transactions`
 
-## Contributors ✨
+## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
