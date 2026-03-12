@@ -107,8 +107,7 @@ class StoreModule:
         response = self._http.get("store/my")
         validate_response(response)
         return [
-            PurchasedProduct.from_json(p)
-            for p in self._data_items(response.json())
+            PurchasedProduct.from_json(p) for p in self._data_items(response.json())
         ]
 
     def get_purchased(self, uuid: str) -> PurchasedProduct:
