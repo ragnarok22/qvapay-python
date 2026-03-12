@@ -3,6 +3,8 @@ name: Publish
 on:
   push:
     tags: v*.*.*
+permissions:
+  contents: write
 jobs:
   Publish:
     runs-on: ubuntu-latest
