@@ -32,4 +32,4 @@ jobs:
         overwrite: true
         file_glob: true
     - name: Publish in PyPI
-      run: uv publish --trusted-publishing always
+      uses: pypa/gh-action-pypi-publish@release/v1
