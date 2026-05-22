@@ -43,8 +43,10 @@
 ### Build
 
 - refresh dependency constraints and lockfile versions
-- expand the CI Python matrix through Python 3.14 and update workflow actions
+- test on Python 3.12 through Python 3.14 and update workflow actions
 - configure coverage, JUnit reports, and authenticated Codecov uploads
+- publish to PyPI with Trusted Publishing/OIDC using the `pypi` environment
+- update release workflows to use `actions/checkout@v6`, `codecov/codecov-action@v6`, and `astral-sh/setup-uv@v8.1.0`
 
 ## v0.3.0 (2021-10-30)
 
