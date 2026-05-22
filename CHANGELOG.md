@@ -2,7 +2,7 @@
 
 ### Breaking
 
-- require Python 3.10 or newer
+- require Python 3.12 or newer
 - flatten public imports under `qvapay` and remove the old `qvapay.v1` layout
 - replace the previous monolithic client API with async and sync clients organized by modules
 - use bearer-token authentication for user clients and UUID/secret authentication for merchant clients

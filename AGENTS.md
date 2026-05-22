@@ -51,7 +51,7 @@ Dataclass models in `qvapay/models/` each have a `from_json()` classmethod that 
 
 ## Coding Style
 
-- Python 3.10+, 88-char line length
+- Python 3.12+, 88-char line length
 - Formatting enforced by `ruff` (replaces black/flake8/isort/autoflake)
 - Pre-commit hooks: trailing-whitespace, check-added-large-files, mixed-line-ending, ruff check+format
 
